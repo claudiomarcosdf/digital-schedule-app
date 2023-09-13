@@ -3,15 +3,15 @@ type Gender = 'MASCULINO' | 'FEMININO';
 
 //export type PersonType = 'Paciente' | 'Profissional';
 
-declare namespace Patient {
+declare namespace PatientType {
   interface Patient {
-      id?: number;
+      id?: number | null;
+      nickName: string;
       person: Person;
-      createdDate: string;
   }
 
   interface Person {
-    id?: number;
+    id?: number | null;
     fullName?: string;
     email?: string;
     birthDay?: string;
@@ -22,12 +22,13 @@ declare namespace Patient {
     zipCode?: number;
     phone?: string;
     phone2?: string;
-    active: boolean;
+    active?: boolean | null;
+    createdDate?: string | null;
     personType: PersonType;
   } 
   
   interface PersonType {
-    id?: number;
+    id?: number | null;
     name: string;
   }
 

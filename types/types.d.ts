@@ -23,7 +23,8 @@ import {
     AppMenuItemProps,
     AppMenuItem
 } from './layout';
-import { Patient, Demo, LayoutType, SortOrderType, CustomEvent, ChartDataState, ChartOptionsState, AppMailSidebarItem, AppMailReplyProps, AppMailProps } from './demo';
+import { Demo, LayoutType, SortOrderType, CustomEvent, ChartDataState, ChartOptionsState, AppMailSidebarItem, AppMailReplyProps, AppMailProps } from './demo';
+import { PatientType } from './patient';
 
 type ChildContainerProps = {
     children: ReactNode;
@@ -49,7 +50,7 @@ export type {
     AppTopbarRef,
     AppMenuItemProps,
     ChildContainerProps,
-    Patient,
+    PatientType,
     Demo,
     LayoutType,
     SortOrderType,

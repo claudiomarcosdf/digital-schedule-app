@@ -9,7 +9,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 //import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import brLocale from '@fullcalendar/core/locales/pt-br';
-
 import { INITIAL_EVENTS, createEventId } from './event-utils';
 
 const eventTimeFormat: FormatterInput = {
