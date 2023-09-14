@@ -6,39 +6,45 @@ import { createPatient, getPatients } from "../libs/PatientService";
 type PatientStoreProps = {
   patient: PatientType.Patient | null;
   patients: PatientType.Patient[];
+  setPatient: (patient: PatientType.Patient | null) => void;
   createPatient: (patient: PatientType.Patient) => void;
   updatePatient: (patient: PatientType.Patient) => void;
   getAllPatient: () => void;
   //removePatient: (patient: PatientType.Patient) => void;
 }
 
-const initialPatient: PatientType.Patient = {
-  id: undefined,
-  nickName: "",
-  person: {
-    id: undefined,
+const initialPersonType: PatientType.PersonType = {
+    id: null,
+    name: ""   
+}
+
+const initialPerson: PatientType.Person = {
+    id: null,
     fullName: "",
     email: "",
     birthDay: "",
     cpf: "",
-    rg: undefined,
-    gender: undefined,
+    rg: null,
+    gender: "",
     address: "",
-    zipCode: undefined,
+    zipCode: null,
     phone: "",
     phone2: "",
     active: true,
     createdDate: "",
-    personType: {
-      id: undefined,
-      name: ""
-    }
-  }
+    personType: initialPersonType
+};
+
+export const initialPatient: PatientType.Patient = {
+  id: null,
+  nickName: "",
+  person: initialPerson
 }
 
 export const usePatientStore = create<PatientStoreProps>((set) => ({
-  patient: null,
+  patient: initialPatient,
   patients: [],
+  setPatient: (patient) => set((state) => ({...state, patient})),
   createPatient: async (patient) => {
       const patientResponse: PatientType.Patient  = await createPatient(patient);
       set((state) => ({ ...state, 

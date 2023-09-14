@@ -2,22 +2,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { classNames } from 'primereact/utils';
-import { DataTable, DataTableExpandedRows, DataTableFilterMeta } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import type { PatientType } from '../../../../types/types';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { formatCpfToView, formatPhone } from '../../../helpers/utils';
+import { formatCpfToView, formatDateBr, formatPhone } from '../../../helpers/utils';
 import { usePatientStore } from '../../../../store/PatientStore';
+import PagientFormDialog from './PatientFormDialog';
+import DeleteDialog from '../../../../common/DeleteDialog';
 //import { getPatients } from '../../../../libs/apiPatients';
 
 const PatientList = () => {
     const [filters, setFilters] = useState<DataTableFilterMeta>({});
     const [globalFilterValue, setglobalFilterValue] = useState('');
-    //const [patients, setPatients] = useState<PatientType.Patient[]>([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [titleDialog, setTitleDialog] = useState('');
 
-    const create = usePatientStore((state) => state.createPatient);
+    const setPatient = usePatientStore((state) => state.setPatient);
     const patient = usePatientStore((state) => state.patient);
     const patients = usePatientStore((state) => state.patients);
     const getPatients = usePatientStore((state) => state.getAllPatient);
@@ -73,6 +77,17 @@ const PatientList = () => {
         );
     };
 
+    const editPatient = (patient: PatientType.Patient) => {
+        setTitleDialog('Atualizar Paciente');
+        setPatient({ ...patient });
+        setOpenDialog(true);
+    };
+
+    const confirmDeletePatient = (patient: PatientType.Patient) => {
+        setPatient({ ...patient });
+        setDeleteDialog(true);
+    };
+
     const statusBodyTemplate = (rowData: PatientType.Patient) => {
         return (
             <i
@@ -82,6 +97,19 @@ const PatientList = () => {
                 })}
             ></i>
         );
+    };
+
+    const actionBodyTemplate = (rowData: PatientType.Patient) => {
+        return (
+            <>
+                <Button icon="pi pi-pencil" rounded text severity="info" className="mr-2" onClick={() => editPatient(rowData)} />
+                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeletePatient(rowData)} />
+            </>
+        );
+    };
+
+    const birthDayBodyTemplate = (rowData: PatientType.Patient) => {
+        return formatDateBr(rowData.person.birthDay || '');
     };
 
     const cpfBodyTemplate = (rowData: PatientType.Patient) => {
@@ -96,30 +124,24 @@ const PatientList = () => {
 
     const header = renderHeader();
 
-    const criarClick = () => {
-        const createPatient: PatientType.Patient = {
-            id: null,
-            nickName: 'Crudio',
-            person: {
-                id: null,
-                fullName: 'Claudio marcos',
-                email: 'manu@gmail.com',
-                birthDay: '1949-10-13',
-                cpf: '831.345.550-00',
-                rg: 123456,
-                gender: 'MASCULINO',
-                address: 'travessia 69 de Março de Pedro Álvares nº 23',
-                zipCode: 719393602,
-                phone: '61899722318',
-                phone2: '',
-                personType: {
-                    id: 1,
-                    name: 'Paciente'
-                }
-            }
-        };
+    const novoPacienteClick = () => {
+        setTitleDialog('Cadastrar Paciente');
+        setPatient(null);
+        setOpenDialog(true);
+    };
 
-        create(createPatient);
+    const hideDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const hideDeleteDialog = () => {
+        setDeleteDialog(false);
+    };
+
+    const removePatient = () => {
+        console.log(patient);
+        //remover paciente
+        setDeleteDialog(false);
     };
 
     return (
@@ -127,17 +149,24 @@ const PatientList = () => {
             <div className="col-12">
                 <div className="card">
                     <h5>Pacientes</h5>
-                    <p>Lista de pacientes cadastrados.</p>
-                    <Button onClick={criarClick}>criar</Button>
+                    <div className="flex justify-content-between mb-2">
+                        <p>Lista de pacientes cadastrados.</p>
+                        <Button label="Novo Paciente" icon="pi pi-plus" onClick={novoPacienteClick} />
+                    </div>
+
                     <DataTable value={patients} paginator filters={filters} className="p-datatable-gridlines" showGridlines rows={10} dataKey="id" filterDisplay="menu" loading={false} emptyMessage="Nenhum paciente cadastrado." header={header}>
                         <Column field="nickName" filter header="Apelido" filterPlaceholder="buscar por apelido" style={{ minWidth: '12rem' }} />
                         <Column field="person.fullName" header="Nome" filter filterField="person.fullName" filterPlaceholder="Buscar pelo name" style={{ minWidth: '24rem' }} />
-                        <Column field="person.birthDay" header="Dt Nascimento" filterField="person.birthDay" style={{ minWidth: '10rem' }} body={null} />
+                        <Column field="person.birthDay" header="Dt Nascimento" filterField="person.birthDay" body={birthDayBodyTemplate} style={{ minWidth: '10rem' }} />
                         <Column field="person.cpf" header="Cpf" filterField="representative" body={cpfBodyTemplate} showFilterMatchModes={false} style={{ minWidth: '10rem' }} />
                         <Column field="person.phone" header="Telefone" filterField="balance" body={phoneBodyTemplate} dataType="numeric" style={{ minWidth: '10rem' }} />
                         <Column field="person.active" header="Status" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={statusBodyTemplate} />
+                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
                 </div>
+
+                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
+                <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={removePatient} />
             </div>
         </div>
     );

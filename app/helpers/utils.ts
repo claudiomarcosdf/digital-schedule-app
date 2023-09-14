@@ -18,7 +18,7 @@ function formatBrazil(value: number) {
 
 function formatDateBr(date: string) {
 	if (!date) {
-		return;
+		return '';
 	}
 
 	const dateToFormat = date.substring(0, 10);

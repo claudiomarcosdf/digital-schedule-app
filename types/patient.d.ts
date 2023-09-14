@@ -16,10 +16,10 @@ declare namespace PatientType {
     email?: string;
     birthDay?: string;
     cpf?: string;
-    rg?: number;
-    gender?: Gender;
+    rg?: number | null;
+    gender?: Gender | "";
     address?: string;
-    zipCode?: number;
+    zipCode?: number | null;
     phone?: string;
     phone2?: string;
     active?: boolean | null;

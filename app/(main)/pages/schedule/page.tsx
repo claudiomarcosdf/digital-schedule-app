@@ -87,6 +87,7 @@ const SchedulePage = () => {
                     <h5>Agenda</h5>
                     <div className="">
                         <FullCalendar
+                            height={700}
                             locale={brLocale}
                             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                             headerToolbar={{
