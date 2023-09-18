@@ -82,6 +82,15 @@ function formatPhone(value: string) {
 	}
 }
 
+function maskPhone(value: string) {
+   if (!value || value == '') return '(99) 99999-9999';
+
+	 value = value.replaceAll('(', '').replaceAll(')', '').replaceAll(' ', '').replaceAll('-', '');
+
+	 if (value.length == 11) return "(99) 99999-9999"
+	 else if (value.length == 10) return "(99) 9999-9999"
+ }
+
 export { 	
   formatCurrency,
 	formatNumber,
@@ -90,5 +99,6 @@ export {
 	capitalize,
 	capitalizeFullName,
 	formatCpfToView,
-	formatPhone
+	formatPhone,
+	maskPhone
 }

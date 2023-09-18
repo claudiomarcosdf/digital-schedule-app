@@ -31,4 +31,20 @@ a {
     max-width: 1200px;
    // max-height: fit-content;
     margin: 0 auto;
-  }
+}
+
+input[value=""]::-webkit-datetime-edit{ color: transparent; }
+input:focus::-webkit-datetime-edit{ color: #495057; }
+// input[type='date']:in-range::-webkit-datetime-edit-year-field,input[type='date']:in-range::-webkit-datetime-edit-month-field,input[type='date']:in-range::-webkit-datetime-edit-day-field,input[type='date']:in-range::-webkit-datetime-edit-text{  color: transparent;}
+
+.without-mask {
+    -webkit-datetime-edit-year-field:not([aria-valuenow]),
+    -webkit-datetime-edit-month-field:not([aria-valuenow]),
+    -webkit-datetime-edit-day-field:not([aria-valuenow]) {
+        color: transparent;
+    } 
+}
+
+.p-inactive {
+    opacity: 0.6;
+}

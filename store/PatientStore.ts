@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import type { PatientType } from "../types/patient";
-import { createPatient, getPatients } from "../libs/PatientService";
+import { createPatient, deletePatient, getPatients, updatePatient } from "../libs/PatientService";
 
 type PatientStoreProps = {
   patient: PatientType.Patient | null;
@@ -9,8 +9,8 @@ type PatientStoreProps = {
   setPatient: (patient: PatientType.Patient | null) => void;
   createPatient: (patient: PatientType.Patient) => void;
   updatePatient: (patient: PatientType.Patient) => void;
+  removePatient: (patient: PatientType.Patient) => void;
   getAllPatient: () => void;
-  //removePatient: (patient: PatientType.Patient) => void;
 }
 
 const initialPersonType: PatientType.PersonType = {
@@ -41,6 +41,12 @@ export const initialPatient: PatientType.Patient = {
   person: initialPerson
 }
 
+const updateList = (value: any, objToFin: any) => {
+   value.splice(value.findIndex(patient => patient?.id == objToFin?.id),1,objToFin);
+   return value;
+  // state.patients.splice(state.patients.findIndex(patient => patient?.id == patientResponse?.id),1,patientResponse)
+}
+
 export const usePatientStore = create<PatientStoreProps>((set) => ({
   patient: initialPatient,
   patients: [],
@@ -51,7 +57,16 @@ export const usePatientStore = create<PatientStoreProps>((set) => ({
         patient: patientResponse, 
         patients: [...state.patients, patientResponse] }))
   },  
-  updatePatient: (patient) => set((state) => ({ ...state, patient })),
+  updatePatient: async (patient) => {
+    const patientResponse: PatientType.Patient = await updatePatient(patient);
+
+    set((state) => ({ ...state, patient: patientResponse, patients: updateList(state.patients, patientResponse) }));
+  },
+  removePatient: async (patient) => {
+    patient.person.active = false;
+    await deletePatient(patient);
+    set((state) => ({ ...state, patients: updateList(state.patients, patient) }));
+  },
   getAllPatient: async () => {
       const patients: PatientType.Patient[] = await getPatients();
       set((state) => ({...state, patients}))

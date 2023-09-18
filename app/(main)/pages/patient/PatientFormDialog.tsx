@@ -8,15 +8,15 @@ import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { PatientType } from '../../../../types/patient';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
-import { formatDateBr } from '../../../helpers/utils';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
+import { maskPhone } from '../../../helpers/utils';
 
 const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
     const [patient, setPatient] = useState<PatientType.Patient | null>(initialPatient);
     const [submitted, setSubmitted] = useState(false);
 
     const createPatient = usePatientStore((state) => state.createPatient);
+    const updatePatient = usePatientStore((state) => state.updatePatient);
     const patientStore = usePatientStore((state) => state.patient);
 
     useEffect(() => {
@@ -66,13 +66,8 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
         onChangePerson(name, val);
     };
 
-    const onInputDateChange = (e: CalendarChangeEvent, name: string) => {
-        const val = e.value || null;
-        onChangePerson(name, val);
-    };
-
     const onInputSwitchChange = (e: InputSwitchChangeEvent, name: string) => {
-        const val = e.value || null;
+        const val = e.value;
         onChangePerson(name, val);
     };
 
@@ -85,8 +80,11 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
     function savePatient() {
         setSubmitted(true);
         console.log(patient);
-        //createPatient(patient);
-        //hideDialog();
+        if (patient) {
+            if (patient?.id) updatePatient(patient);
+            else createPatient(patient);
+        }
+        hideDialog();
     }
 
     return (
@@ -111,9 +109,7 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
                     </div>
                     <div className="field col-3">
                         <span className="p-float-label">
-                            <Calendar inputId="birthDay" value="07/18/74"></Calendar>
-                            {/* onChange={(e) => onInputDateChange(e, 'birthDay')} */}
-                            {/* <InputMask id="birthDay" mask="99/99/9999" value={patient?.person.birthDay} onChange={(e) => onInputMaskChange(e, 'birthDay')} /> */}
+                            <InputText id="birthDay" type="date" value={patient?.person.birthDay} onChange={(e) => onInputChangePerson(e, 'birthDay')} style={{ height: '35px' }} />
                             <label htmlFor="birthDay">Data nascimento</label>
                         </span>
                     </div>
@@ -186,21 +182,21 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
                 <div className="formgrid grid mt-4">
                     <div className="field col-4">
                         <span className="p-float-label">
-                            <InputMask id="phone" mask="(99) 99999-9999" value={patient?.person.phone} onChange={(e) => onInputMaskChange(e, 'phone')}></InputMask>
+                            <InputMask id="phone" mask={maskPhone(patient?.person.phone || '')} value={patient?.person.phone} onChange={(e) => onInputMaskChange(e, 'phone')}></InputMask>
                             <label htmlFor="phone">Telefone</label>
                         </span>
                     </div>
                     <div className="field col-4">
                         <span className="p-float-label">
-                            <InputMask id="phone2" mask="(99) 99999-9999" value={patient?.person.phone2} onChange={(e) => onInputMaskChange(e, 'phone2')}></InputMask>
-                            <label htmlFor="phone2">Telefone</label>
+                            <InputMask id="phone2" mask={maskPhone(patient?.person.phone || '')} value={patient?.person.phone2} onChange={(e) => onInputMaskChange(e, 'phone2')}></InputMask>
+                            <label htmlFor="phone2">Telefone 2</label>
                         </span>
                     </div>
                     <div className="col-4 flex justify-content-end mt-1">
                         <label htmlFor="status" className="mr-2">
                             {patient?.person.active ? 'Ativo' : 'Inativo'}
                         </label>
-                        <InputSwitch id="status" checked={patient?.person.active || true} onChange={(e) => onInputSwitchChange(e, 'active')} />
+                        <InputSwitch id="status" checked={patient?.person.active ?? true} onChange={(e) => onInputSwitchChange(e, 'active')} />
                     </div>
                 </div>
             </Dialog>

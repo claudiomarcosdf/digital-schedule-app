@@ -25,6 +25,7 @@ const PatientList = () => {
     const patient = usePatientStore((state) => state.patient);
     const patients = usePatientStore((state) => state.patients);
     const getPatients = usePatientStore((state) => state.getAllPatient);
+    const removePatient = usePatientStore((state) => state.removePatient);
 
     const list = useCallback(() => {
         getPatients();
@@ -122,6 +123,12 @@ const PatientList = () => {
         return formatPhone(rowData.person.phone || '');
     };
 
+    const rowClass = (rowData: PatientType.Patient) => {
+        return {
+            'p-inactive': rowData.person.active == false
+        };
+    };
+
     const header = renderHeader();
 
     const novoPacienteClick = () => {
@@ -138,9 +145,9 @@ const PatientList = () => {
         setDeleteDialog(false);
     };
 
-    const removePatient = () => {
-        console.log(patient);
-        //remover paciente
+    const onRemovePatient = () => {
+        //remover paciente logicamente
+        if (patient) removePatient(patient);
         setDeleteDialog(false);
     };
 
@@ -154,19 +161,32 @@ const PatientList = () => {
                         <Button label="Novo Paciente" icon="pi pi-plus" onClick={novoPacienteClick} />
                     </div>
 
-                    <DataTable value={patients} paginator filters={filters} className="p-datatable-gridlines" showGridlines rows={10} dataKey="id" filterDisplay="menu" loading={false} emptyMessage="Nenhum paciente cadastrado." header={header}>
+                    <DataTable
+                        value={patients}
+                        paginator
+                        filters={filters}
+                        rowClassName={rowClass}
+                        className="p-datatable-gridlines"
+                        showGridlines
+                        rows={10}
+                        dataKey="id"
+                        filterDisplay="menu"
+                        loading={false}
+                        emptyMessage="Nenhum paciente cadastrado."
+                        header={header}
+                    >
                         <Column field="nickName" filter header="Apelido" filterPlaceholder="buscar por apelido" style={{ minWidth: '12rem' }} />
                         <Column field="person.fullName" header="Nome" filter filterField="person.fullName" filterPlaceholder="Buscar pelo name" style={{ minWidth: '24rem' }} />
                         <Column field="person.birthDay" header="Dt Nascimento" filterField="person.birthDay" body={birthDayBodyTemplate} style={{ minWidth: '10rem' }} />
                         <Column field="person.cpf" header="Cpf" filterField="representative" body={cpfBodyTemplate} showFilterMatchModes={false} style={{ minWidth: '10rem' }} />
                         <Column field="person.phone" header="Telefone" filterField="balance" body={phoneBodyTemplate} dataType="numeric" style={{ minWidth: '10rem' }} />
                         <Column field="person.active" header="Status" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={statusBodyTemplate} />
-                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column header="Ações" body={actionBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                 </div>
 
                 <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
-                <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={removePatient} />
+                <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemovePatient} />
             </div>
         </div>
     );
