@@ -24,7 +24,9 @@ import {
     AppMenuItem
 } from './layout';
 import { Demo, LayoutType, SortOrderType, CustomEvent, ChartDataState, ChartOptionsState, AppMailSidebarItem, AppMailReplyProps, AppMailProps } from './demo';
-import { PatientType } from './patient';
+import { PersonType, Person } from './person';
+import { Patient } from './patient';
+import { ProfessionalType, Professional, professionalSchedulePropsForm } from './professional';
 
 type ChildContainerProps = {
     children: ReactNode;
@@ -50,7 +52,6 @@ export type {
     AppTopbarRef,
     AppMenuItemProps,
     ChildContainerProps,
-    PatientType,
     Demo,
     LayoutType,
     SortOrderType,
@@ -60,5 +61,10 @@ export type {
     AppMailSidebarItem,
     AppMailReplyProps,
     AppMailProps,
-    AppMenuItem
+    AppMenuItem,
+    PersonType,
+    Patient,
+    ProfessionalType,
+    Professional,
+    professionalSchedulePropsForm
 };

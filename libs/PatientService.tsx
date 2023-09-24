@@ -1,4 +1,4 @@
-import { PatientType } from '../types/patient';
+import { Patient } from '../types/patient';
 
 async function getPatients() {
     const response = await fetch('/api/patients');
@@ -14,7 +14,7 @@ async function getPatients() {
 //     'API-Key': process.env.DATA_API_KEY
 // },
 
-async function createPatient(patient: PatientType.Patient) {
+async function createPatient(patient: Patient) {
     const response = await fetch('/api/patients', {
         method: 'POST',
         headers: {
@@ -29,7 +29,7 @@ async function createPatient(patient: PatientType.Patient) {
     return await response.json();
 }
 
-async function updatePatient(patient: PatientType.Patient) {
+async function updatePatient(patient: Patient) {
     const response = await fetch('/api/patients', {
         method: 'PUT',
         headers: {
@@ -44,7 +44,7 @@ async function updatePatient(patient: PatientType.Patient) {
     return await response.json();
 }
 
-async function deletePatient(patient: PatientType.Patient) {
+async function deletePatient(patient: Patient) {
     const response = await fetch('/api/patients/' + patient.id, {
         method: 'DELETE',
         headers: {

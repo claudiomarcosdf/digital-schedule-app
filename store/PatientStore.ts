@@ -1,24 +1,25 @@
 import { create } from "zustand";
 
-import type { PatientType } from "../types/patient";
+import type { Patient } from "../types/patient";
+import type { PersonType, Person } from "../types/person";
 import { createPatient, deletePatient, getPatients, updatePatient } from "../libs/PatientService";
 
 type PatientStoreProps = {
-  patient: PatientType.Patient | null;
-  patients: PatientType.Patient[];
-  setPatient: (patient: PatientType.Patient | null) => void;
-  createPatient: (patient: PatientType.Patient) => void;
-  updatePatient: (patient: PatientType.Patient) => void;
-  removePatient: (patient: PatientType.Patient) => void;
+  patient: Patient | null;
+  patients: Patient[];
+  setPatient: (patient: Patient | null) => void;
+  createPatient: (patient: Patient) => void;
+  updatePatient: (patient: Patient) => void;
+  removePatient: (patient: Patient) => void;
   getAllPatient: () => void;
 }
 
-const initialPersonType: PatientType.PersonType = {
-    id: null,
-    name: ""   
+const initialPersonType: PersonType = {
+    id: 1,
+    name: "Paciente"   
 }
 
-const initialPerson: PatientType.Person = {
+const initialPerson: Person = {
     id: null,
     fullName: "",
     email: "",
@@ -35,14 +36,14 @@ const initialPerson: PatientType.Person = {
     personType: initialPersonType
 };
 
-export const initialPatient: PatientType.Patient = {
+export const initialPatient: Patient = {
   id: null,
   nickName: "",
   person: initialPerson
 }
 
-const updateList = (value: any, objToFin: any) => {
-   value.splice(value.findIndex(patient => patient?.id == objToFin?.id),1,objToFin);
+const _updateList = (value: any, objToFin: any) => {
+   value.splice(value.findIndex((patient: any) => patient?.id == objToFin?.id),1,objToFin);
    return value;
   // state.patients.splice(state.patients.findIndex(patient => patient?.id == patientResponse?.id),1,patientResponse)
 }
@@ -52,23 +53,23 @@ export const usePatientStore = create<PatientStoreProps>((set) => ({
   patients: [],
   setPatient: (patient) => set((state) => ({...state, patient})),
   createPatient: async (patient) => {
-      const patientResponse: PatientType.Patient  = await createPatient(patient);
+      const patientResponse: Patient  = await createPatient(patient);
       set((state) => ({ ...state, 
         patient: patientResponse, 
         patients: [...state.patients, patientResponse] }))
   },  
   updatePatient: async (patient) => {
-    const patientResponse: PatientType.Patient = await updatePatient(patient);
+    const patientResponse: Patient = await updatePatient(patient);
 
-    set((state) => ({ ...state, patient: patientResponse, patients: updateList(state.patients, patientResponse) }));
+    set((state) => ({ ...state, patient: patientResponse, patients: _updateList(state.patients, patientResponse) }));
   },
   removePatient: async (patient) => {
     patient.person.active = false;
     await deletePatient(patient);
-    set((state) => ({ ...state, patients: updateList(state.patients, patient) }));
+    set((state) => ({ ...state, patients: _updateList(state.patients, patient) }));
   },
   getAllPatient: async () => {
-      const patients: PatientType.Patient[] = await getPatients();
+      const patients: Patient[] = await getPatients();
       set((state) => ({...state, patients}))
   }
 }));

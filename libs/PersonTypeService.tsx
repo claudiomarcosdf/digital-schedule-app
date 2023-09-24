@@ -1,4 +1,4 @@
-import { PatientType } from '../types/patient';
+import { PersonType } from '../types/person';
 
 async function getPersonTypes() {
     const response = await fetch('/api/persontypes');
@@ -9,7 +9,7 @@ async function getPersonTypes() {
     return await response.json();
 }
 
-async function createPersonType(personType: PatientType.PersonType) {
+async function createPersonType(personType: PersonType) {
     const response = await fetch('/api/persontypes', {
         method: 'POST',
         headers: {
@@ -19,7 +19,7 @@ async function createPersonType(personType: PatientType.PersonType) {
     });
 
     if (!response.ok) {
-        throw new Error('Erro ao incluir paciente');
+        throw new Error('Erro ao incluir tipo de pessoa');
     }
     return await response.json();
 }

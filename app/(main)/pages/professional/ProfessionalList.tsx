@@ -3,36 +3,34 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { classNames } from 'primereact/utils';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
-import type { Patient } from '../../../../types/types';
+import type { Professional } from '../../../../types/types';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { formatCpfToView, formatDateBr, formatPhone } from '../../../helpers/utils';
-import { usePatientStore } from '../../../../store/PatientStore';
-import PagientFormDialog from './PatientFormDialog';
+import { formatDateBr, formatPhone } from '../../../helpers/utils';
+import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import DeleteDialog from '../../../../common/DeleteDialog';
-//import { getPatients } from '../../../../libs/apiPatients';
+import ProfessionalFormDialog from './ProfessionalFormDialog';
 
-const PatientList = () => {
+const ProfessionalList = () => {
     const [filters, setFilters] = useState<DataTableFilterMeta>({});
     const [globalFilterValue, setglobalFilterValue] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
 
-    const setPatient = usePatientStore((state) => state.setPatient);
-    const patient = usePatientStore((state) => state.patient);
-    const patients = usePatientStore((state) => state.patients);
-    const getPatients = usePatientStore((state) => state.getAllPatient);
-    const removePatient = usePatientStore((state) => state.removePatient);
+    const setProfessional = useProfessionalStore((state) => state.setProfessional);
+    const professional = useProfessionalStore((state) => state.professional);
+    const professionals = useProfessionalStore((state) => state.professionals);
+    const getProfessionals = useProfessionalStore((state) => state.getAllProfessional);
+    const removeProfessional = useProfessionalStore((state) => state.removeProfessional);
 
     const list = useCallback(() => {
-        getPatients();
+        getProfessionals();
     }, []);
 
     useEffect(() => {
-        //getPatients().then((data) => setPatients(data));
         list();
         initFilters();
     }, [list]);
@@ -49,6 +47,10 @@ const PatientList = () => {
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
             },
             'person.fullName': {
+                operator: FilterOperator.AND,
+                constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
+            },
+            'professionalType.name': {
                 operator: FilterOperator.AND,
                 constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }]
             }
@@ -78,18 +80,19 @@ const PatientList = () => {
         );
     };
 
-    const editPatient = (patient: Patient) => {
-        setTitleDialog('Atualizar dados do Paciente');
-        setPatient({ ...patient });
+    const editProfessional = (professional: Professional) => {
+        console.log(professional);
+        setTitleDialog('Atualizar dados do Profissional');
+        setProfessional({ ...professional });
         setOpenDialog(true);
     };
 
-    const confirmDeletePatient = (patient: Patient) => {
-        setPatient({ ...patient });
+    const confirmDeleteProfessional = (professional: Professional) => {
+        setProfessional({ ...professional });
         setDeleteDialog(true);
     };
 
-    const statusBodyTemplate = (rowData: Patient) => {
+    const statusBodyTemplate = (rowData: Professional) => {
         return (
             <i
                 className={classNames('pi', {
@@ -100,30 +103,25 @@ const PatientList = () => {
         );
     };
 
-    const actionBodyTemplate = (rowData: Patient) => {
+    const actionBodyTemplate = (rowData: Professional) => {
         return (
             <>
-                <Button icon="pi pi-pencil" rounded text severity="info" className="mr-2" onClick={() => editPatient(rowData)} />
-                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeletePatient(rowData)} />
+                <Button icon="pi pi-pencil" rounded text severity="info" className="mr-2" onClick={() => editProfessional(rowData)} />
+                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeleteProfessional(rowData)} />
             </>
         );
     };
 
-    const birthDayBodyTemplate = (rowData: Patient) => {
-        return formatDateBr(rowData.person.birthDay || '');
+    const documentBodyTemplate = (rowData: Professional) => {
+        //return <span className={`customer-badge status-unqualified`}>{rowData.person.cpf}</span>;
+        return rowData.document;
     };
 
-    const cpfBodyTemplate = (rowData: Patient) => {
-        //return <span className={`customer-badge status-unqualified`}>{rowData.person.cpf}</span>;
-        return formatCpfToView(rowData.person.cpf || '');
-    };
-
-    const phoneBodyTemplate = (rowData: Patient) => {
-        //return <span className={`customer-badge status-unqualified`}>{rowData.person.cpf}</span>;
+    const phoneBodyTemplate = (rowData: Professional) => {
         return formatPhone(rowData.person.phone || '');
     };
 
-    const rowClass = (rowData: Patient) => {
+    const rowClass = (rowData: Professional) => {
         return {
             'p-inactive': rowData.person.active == false
         };
@@ -131,9 +129,9 @@ const PatientList = () => {
 
     const header = renderHeader();
 
-    const newPacienteClick = () => {
-        setTitleDialog('Cadastrar Paciente');
-        setPatient(null);
+    const newProfessionalClick = () => {
+        setTitleDialog('Cadastrar Profissional');
+        setProfessional(null);
         setOpenDialog(true);
     };
 
@@ -145,9 +143,9 @@ const PatientList = () => {
         setDeleteDialog(false);
     };
 
-    const onRemovePatient = () => {
-        //remover paciente logicamente
-        if (patient) removePatient(patient);
+    const onRemoveProfessional = () => {
+        //remover profissional logicamente
+        if (professional) removeProfessional(professional);
         setDeleteDialog(false);
     };
 
@@ -155,14 +153,14 @@ const PatientList = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <h5>Pacientes</h5>
+                    <h5>Profissionais</h5>
                     <div className="flex justify-content-between mb-2">
-                        <p>Lista de pacientes cadastrados.</p>
-                        <Button label="Novo Paciente" icon="pi pi-plus" onClick={newPacienteClick} />
+                        <p>Lista de profissionais cadastrados.</p>
+                        <Button label="Novo Paciente" icon="pi pi-plus" onClick={newProfessionalClick} />
                     </div>
 
                     <DataTable
-                        value={patients}
+                        value={professionals}
                         paginator
                         filters={filters}
                         rowClassName={rowClass}
@@ -172,24 +170,24 @@ const PatientList = () => {
                         dataKey="id"
                         filterDisplay="menu"
                         loading={false}
-                        emptyMessage="Nenhum paciente cadastrado."
+                        emptyMessage="Nenhum profissional cadastrado."
                         header={header}
                     >
                         <Column field="nickName" filter header="Apelido" filterPlaceholder="buscar por apelido" style={{ minWidth: '12rem' }} />
                         <Column field="person.fullName" header="Nome" filter filterField="person.fullName" filterPlaceholder="Buscar pelo name" style={{ minWidth: '24rem' }} />
-                        <Column field="person.birthDay" header="Dt Nascimento" filterField="person.birthDay" body={birthDayBodyTemplate} style={{ minWidth: '10rem' }} />
-                        <Column field="person.cpf" header="Cpf" filterField="representative" body={cpfBodyTemplate} showFilterMatchModes={false} style={{ minWidth: '10rem' }} />
+                        <Column field="professionalType.name" header="Profissional" filter filterField="professionalType.name" filterPlaceholder="Buscar pelo tipo de profissional" style={{ minWidth: '12rem' }} />
+                        <Column field="document" header="Nº CR" filterField="representative" body={documentBodyTemplate} showFilterMatchModes={false} style={{ minWidth: '6rem' }} />
                         <Column field="person.phone" header="Telefone" filterField="balance" body={phoneBodyTemplate} dataType="numeric" style={{ minWidth: '10rem' }} />
                         <Column field="person.active" header="Status" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={statusBodyTemplate} />
                         <Column header="Ações" body={actionBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                 </div>
 
-                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
-                <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemovePatient} />
+                <ProfessionalFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
+                <DeleteDialog message={`Confirma a exclusão do profissional ${professional?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemoveProfessional} />
             </div>
         </div>
     );
 };
 
-export default PatientList;
+export default ProfessionalList;

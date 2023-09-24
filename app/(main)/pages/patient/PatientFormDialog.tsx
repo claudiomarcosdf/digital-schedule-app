@@ -6,13 +6,13 @@ import { initialPatient, usePatientStore } from '../../../../store/PatientStore'
 import { Button } from 'primereact/button';
 import { RadioButton, RadioButtonChangeEvent } from 'primereact/radiobutton';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
-import { PatientType } from '../../../../types/patient';
+import type { Patient } from '../../../../types/patient';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
 import { maskPhone } from '../../../helpers/utils';
 
 const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
-    const [patient, setPatient] = useState<PatientType.Patient | null>(initialPatient);
+    const [patient, setPatient] = useState<Patient | null>(initialPatient);
     const [submitted, setSubmitted] = useState(false);
 
     const createPatient = usePatientStore((state) => state.createPatient);
@@ -79,12 +79,13 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
 
     function savePatient() {
         setSubmitted(true);
-        console.log(patient);
-        if (patient) {
+
+        if (patient?.nickName && patient.person.fullName && patient.person.gender) {
             if (patient?.id) updatePatient(patient);
             else createPatient(patient);
+
+            hideDialog();
         }
-        hideDialog();
     }
 
     return (
@@ -141,11 +142,29 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
                     <label className="mb-3">Gênero</label>
                     <div className="formgrid grid">
                         <div className="field-radiobutton col-6">
-                            <RadioButton inputId="masculino" name="gender" value="MASCULINO" onChange={onGenderChange} checked={patient?.person.gender == 'MASCULINO'} />
+                            <RadioButton
+                                inputId="masculino"
+                                name="gender"
+                                value="MASCULINO"
+                                onChange={onGenderChange}
+                                checked={patient?.person.gender == 'MASCULINO'}
+                                className={classNames({
+                                    'p-invalid': submitted && !patient?.person.gender
+                                })}
+                            />
                             <label htmlFor="category1">Masculino</label>
                         </div>
                         <div className="field-radiobutton col-6">
-                            <RadioButton inputId="feminino" name="gender" value="FEMININO" onChange={onGenderChange} checked={patient?.person.gender == 'FEMININO'} />
+                            <RadioButton
+                                inputId="feminino"
+                                name="gender"
+                                value="FEMININO"
+                                onChange={onGenderChange}
+                                checked={patient?.person.gender == 'FEMININO'}
+                                className={classNames({
+                                    'p-invalid': submitted && !patient?.person.gender
+                                })}
+                            />
                             <label htmlFor="category2">Feminino</label>
                         </div>
                     </div>

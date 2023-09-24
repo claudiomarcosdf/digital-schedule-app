@@ -22,7 +22,7 @@ const AppMenu = () => {
         {
             label: 'Cadastro',
             items: [
-                { label: 'Profissional', icon: 'pi pi-fw pi-eye', to: '/' },
+                { label: 'Profissional', icon: 'pi pi-fw pi-eye', to: '/pages/professional' },
                 { label: 'Paciente', icon: 'pi pi-fw pi-id-card', to: '/pages/patient' }
             ]
         },
