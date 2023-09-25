@@ -19,6 +19,7 @@ const ProfessionalList = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const setProfessional = useProfessionalStore((state) => state.setProfessional);
     const professional = useProfessionalStore((state) => state.professional);
@@ -26,12 +27,13 @@ const ProfessionalList = () => {
     const getProfessionals = useProfessionalStore((state) => state.getAllProfessional);
     const removeProfessional = useProfessionalStore((state) => state.removeProfessional);
 
-    const list = useCallback(() => {
-        getProfessionals();
+    const list = useCallback(async () => {
+        await getProfessionals();
     }, []);
 
     useEffect(() => {
         list();
+        setLoading(false);
         initFilters();
     }, [list]);
 
@@ -169,7 +171,7 @@ const ProfessionalList = () => {
                         rows={10}
                         dataKey="id"
                         filterDisplay="menu"
-                        loading={false}
+                        loading={loading}
                         emptyMessage="Nenhum profissional cadastrado."
                         header={header}
                     >

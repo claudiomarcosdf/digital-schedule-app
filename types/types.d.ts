@@ -27,6 +27,7 @@ import { Demo, LayoutType, SortOrderType, CustomEvent, ChartDataState, ChartOpti
 import { PersonType, Person } from './person';
 import { Patient } from './patient';
 import { ProfessionalType, Professional, professionalSchedulePropsForm } from './professional';
+import { Procedure } from './procedure';
 
 type ChildContainerProps = {
     children: ReactNode;
@@ -66,5 +67,6 @@ export type {
     Patient,
     ProfessionalType,
     Professional,
+    Procedure,
     professionalSchedulePropsForm
 };

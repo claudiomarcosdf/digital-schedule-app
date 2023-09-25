@@ -20,6 +20,7 @@ const PatientList = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const setPatient = usePatientStore((state) => state.setPatient);
     const patient = usePatientStore((state) => state.patient);
@@ -27,13 +28,14 @@ const PatientList = () => {
     const getPatients = usePatientStore((state) => state.getAllPatient);
     const removePatient = usePatientStore((state) => state.removePatient);
 
-    const list = useCallback(() => {
-        getPatients();
+    const list = useCallback(async () => {
+        await getPatients();
     }, []);
 
     useEffect(() => {
         //getPatients().then((data) => setPatients(data));
         list();
+        setLoading(false);
         initFilters();
     }, [list]);
 
@@ -171,7 +173,7 @@ const PatientList = () => {
                         rows={10}
                         dataKey="id"
                         filterDisplay="menu"
-                        loading={false}
+                        loading={loading}
                         emptyMessage="Nenhum paciente cadastrado."
                         header={header}
                     >

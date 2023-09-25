@@ -67,7 +67,7 @@ function JornadaHorariosFormDialog({ hideDialog }: any) {
         //salva professionalSchedule
         if (professional?.id && professionalScheduleForm) {
             const professionalSchedule = convertToProfessionalSchedule(professionalScheduleForm);
-            console.log(professionalSchedule);
+            //console.log(professionalSchedule);
             if (professionalSchedule) {
                 if (professional?.professionalSchedule?.id) {
                     professionalSchedule.id = professional.professionalSchedule.id;
@@ -76,7 +76,6 @@ function JornadaHorariosFormDialog({ hideDialog }: any) {
                 } else {
                     professionalSchedule.id = null;
                     professionalSchedule.professionalId = professional.id;
-                    console.log(professionalSchedule);
                     createProfessionalSchedule(professionalSchedule);
                 }
 
