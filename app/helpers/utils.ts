@@ -12,6 +12,17 @@ function formatNumber(value: number) {
     });
 }
 
+function validPrice(value: number | undefined) {
+    if (value == undefined || value == null) return false;
+    try {
+        if (parseFloat(value.toString()) < 0.00) return false;
+    } catch {
+        console.log(' ERRO '+ value)
+    }
+
+    return true;
+}
+
 function formatBrazil(value: number) {
     return value.toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
@@ -283,4 +294,4 @@ function convertToProfessionalSchedule(professionalScheduleForm: ProfessionalSch
     return professionalSchedule;
 }
 
-export { formatCurrency, formatNumber, formatBrazil, formatDateBr, capitalize, capitalizeFullName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule };
+export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, capitalize, capitalizeFullName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule };

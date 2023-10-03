@@ -1,15 +1,19 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import { InputText } from 'primereact/inputtext';
+import { Column } from 'primereact/column';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { useProcedureStore } from '../../../../store/ProcedureStore';
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
-import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { Column } from 'primereact/column';
 import { Procedure } from '../../../../types/procedure';
-import { InputText } from 'primereact/inputtext';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
+import ProcedureFormDialog from './ProcedureFormDialog';
+import DeleteDialog from '../../../../common/DeleteDialog';
+import { formatCurrency } from '../../../helpers/utils';
 
 const ProcedureList = () => {
     const [filters, setFilters] = useState<DataTableFilterMeta>({});
@@ -19,11 +23,14 @@ const ProcedureList = () => {
     const [titleDialog, setTitleDialog] = useState('');
     const [loading, setLoading] = useState(true);
     const [professionalType, setProfessionalType] = useState();
+    const toast = useRef<Toast>(null);
 
     const getProfessionalTypes = useProfessionalTypeStore((state) => state.getAllProfessionalTypes);
     const professionalTypes = useProfessionalTypeStore((state) => state.professionalTypes);
     const getProcedures = useProcedureStore((state) => state.getProceduresByProfessionalType);
     const setProcedure = useProcedureStore((state) => state.setProcedure);
+    const removeProcedure = useProcedureStore((state) => state.removeProcedure);
+    const procedure = useProcedureStore((state) => state.procedure);
     const procedures = useProcedureStore((store) => store.procedures);
 
     const listProfessionalTypes = useCallback(async () => {
@@ -96,13 +103,44 @@ const ProcedureList = () => {
         );
     };
 
+    const priceBodyTemplate = (rowData: Procedure) => {
+        return (
+            <>
+                <span className="p-column-title">Price</span>
+                {formatCurrency(rowData.price as number)}
+            </>
+        );
+    };
+
     const actionBodyTemplate = (rowData: Procedure) => {
         return (
             <>
                 <Button icon="pi pi-pencil" rounded text severity="info" className="mr-2" onClick={() => editProcedure(rowData)} />
-                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeleteProcedure(rowData)} />
+                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeleteProcedure(rowData)} disabled={!rowData.active} />
             </>
         );
+    };
+
+    const hideDialog = () => {
+        setOpenDialog(false);
+    };
+
+    const hideDeleteDialog = () => {
+        setDeleteDialog(false);
+    };
+
+    const onRemoveProcedure = () => {
+        //remover procedimento logicamente
+        if (procedure) {
+            removeProcedure(procedure);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Procedimento excluído',
+                life: 3000
+            });
+        }
+        setDeleteDialog(false);
     };
 
     const editProcedure = (procedure: Procedure) => {
@@ -132,6 +170,8 @@ const ProcedureList = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
+                    <Toast ref={toast} />
+
                     <h5>Procedimentos</h5>
                     <div className="flex justify-content-between mb-2">
                         <p>Lista de procedimentos/serviços cadastrados.</p>
@@ -163,12 +203,15 @@ const ProcedureList = () => {
                         header={header}
                     >
                         <Column field="name" filter header="Procedimento" filterField="name" filterPlaceholder="buscar nome do procedimento" style={{ minWidth: '24rem' }} />
-                        <Column field="price" header="Preço" filter style={{ minWidth: '10rem' }} />
+                        <Column field="price" header="Preço" body={priceBodyTemplate} filter style={{ minWidth: '10rem' }} />
                         <Column field="professionalType.name" header="Profissional" filter filterField="professionalType.name" filterPlaceholder="Buscar pelo tipo de profissional" style={{ minWidth: '12rem' }} />
                         <Column field="active" header="Status" dataType="boolean" bodyClassName="text-center" style={{ minWidth: '5rem' }} body={statusBodyTemplate} />
                         <Column header="Ações" body={actionBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                 </div>
+
+                <ProcedureFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} toast={toast} />
+                <DeleteDialog message={`Confirma a exclusão do procedimento ${procedure?.name}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemoveProcedure} />
             </div>
         </div>
     );

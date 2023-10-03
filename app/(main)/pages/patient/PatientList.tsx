@@ -1,17 +1,18 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { classNames } from 'primereact/utils';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
-import type { Patient } from '../../../../types/types';
+import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { formatCpfToView, formatDateBr, formatPhone } from '../../../helpers/utils';
+import type { Patient } from '../../../../types/types';
 import { usePatientStore } from '../../../../store/PatientStore';
 import PagientFormDialog from './PatientFormDialog';
 import DeleteDialog from '../../../../common/DeleteDialog';
+import { formatCpfToView, formatDateBr, formatPhone } from '../../../helpers/utils';
 //import { getPatients } from '../../../../libs/apiPatients';
 
 const PatientList = () => {
@@ -21,6 +22,7 @@ const PatientList = () => {
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
     const [loading, setLoading] = useState(true);
+    const toast = useRef<Toast>(null);
 
     const setPatient = usePatientStore((state) => state.setPatient);
     const patient = usePatientStore((state) => state.patient);
@@ -106,7 +108,7 @@ const PatientList = () => {
         return (
             <>
                 <Button icon="pi pi-pencil" rounded text severity="info" className="mr-2" onClick={() => editPatient(rowData)} />
-                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeletePatient(rowData)} />
+                <Button icon="pi pi-trash" rounded text severity="danger" onClick={() => confirmDeletePatient(rowData)} disabled={!rowData.person.active} />
             </>
         );
     };
@@ -149,7 +151,15 @@ const PatientList = () => {
 
     const onRemovePatient = () => {
         //remover paciente logicamente
-        if (patient) removePatient(patient);
+        if (patient) {
+            removePatient(patient);
+            toast.current?.show({
+                severity: 'success',
+                summary: 'Sucesso',
+                detail: 'Paciente excluído',
+                life: 3000
+            });
+        }
         setDeleteDialog(false);
     };
 
@@ -157,6 +167,8 @@ const PatientList = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
+                    <Toast ref={toast} />
+
                     <h5>Pacientes</h5>
                     <div className="flex justify-content-between mb-2">
                         <p>Lista de pacientes cadastrados.</p>
@@ -187,7 +199,7 @@ const PatientList = () => {
                     </DataTable>
                 </div>
 
-                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
+                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} toast={toast} />
                 <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemovePatient} />
             </div>
         </div>

@@ -44,12 +44,13 @@ export const useProcedureStore = create<ProcedureStoreProps>((set) => ({
 
   updateProcedure: async (procedure) => {
     const procedureResponse: Procedure = await updateProcedure(procedure);
-    set((state) => ({ ...state, procedure: procedureResponse }));
+    set((state) => ({ ...state, procedure: procedureResponse, procedures: _updateList(state.procedures, procedureResponse) }));
   },  
 
   removeProcedure: async (procedure) => {
+    procedure.active = false;
     await removeProcedure(procedure);
-    set((state) => ({ ...state }));
+    set((state) => ({ ...state, procedures: _updateList(state.procedures, procedure) }));
   },  
 
   getProceduresByProfessionalType: async (profissionalTypeId: number) => {

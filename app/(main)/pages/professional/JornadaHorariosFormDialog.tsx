@@ -8,7 +8,7 @@ import { Button } from 'primereact/button';
 import { validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule } from '../../../helpers/utils';
 import { useProfessionalScheduleStore } from '../../../../store/ProfessionalScheduleStore';
 
-function JornadaHorariosFormDialog({ hideDialog }: any) {
+function JornadaHorariosFormDialog({ hideDialog, toast }: any) {
     const [professional, setProfessional] = useState<Professional | null>(initialProfessional);
     const [professionalScheduleForm, setProfessionalScheduleForm] = useState<ProfessionalSchedulePropsForm>();
 
@@ -78,6 +78,13 @@ function JornadaHorariosFormDialog({ hideDialog }: any) {
                     professionalSchedule.professionalId = professional.id;
                     createProfessionalSchedule(professionalSchedule);
                 }
+
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Jornada e horários atualizados',
+                    life: 3000
+                });
 
                 getAllProfessional(); //atualiza listagem de profissionais
             }

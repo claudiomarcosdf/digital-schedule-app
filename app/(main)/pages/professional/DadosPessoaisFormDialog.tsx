@@ -12,7 +12,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
 import { initialProfessional, useProfessionalStore } from '../../../../store/ProfessionalStore';
 
-export default function DadosPessoaisFormDialog({ hideDialog }: any) {
+export default function DadosPessoaisFormDialog({ hideDialog, toast }: any) {
     const [professional, setProfessional] = useState<Professional | null>(initialProfessional);
     const [submitted, setSubmitted] = useState(false);
 
@@ -103,8 +103,23 @@ export default function DadosPessoaisFormDialog({ hideDialog }: any) {
         setSubmitted(true);
 
         if (professional?.nickName && professional?.person.fullName && professional?.professionalType.id && professional?.person.gender && professional?.document) {
-            if (professional?.id) updateProfessional(professional);
-            else createProfessional(professional);
+            if (professional?.id) {
+                updateProfessional(professional);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Profissional atualizado',
+                    life: 3000
+                });
+            } else {
+                createProfessional(professional);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Profissional incluído',
+                    life: 3000
+                });
+            }
         }
         //hideDialog(); Ao salvar manter na tela para cadastro de dados da jornada etc...
     }

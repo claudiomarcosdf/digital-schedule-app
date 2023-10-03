@@ -11,7 +11,7 @@ import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
 import { maskPhone } from '../../../helpers/utils';
 
-const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
+const PagientFormDialog = ({ title, visible, hideDialog, toast }: any) => {
     const [patient, setPatient] = useState<Patient | null>(initialPatient);
     const [submitted, setSubmitted] = useState(false);
 
@@ -81,8 +81,23 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
         setSubmitted(true);
 
         if (patient?.nickName && patient.person.fullName && patient.person.gender) {
-            if (patient?.id) updatePatient(patient);
-            else createPatient(patient);
+            if (patient?.id) {
+                updatePatient(patient);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Paciente atualizado',
+                    life: 3000
+                });
+            } else {
+                createPatient(patient);
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Sucesso',
+                    detail: 'Paciente incluído',
+                    life: 3000
+                });
+            }
 
             hideDialog();
         }
