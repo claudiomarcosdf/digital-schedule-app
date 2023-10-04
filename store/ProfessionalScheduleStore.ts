@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { ProfessionalSchedule } from "../types/professional";
 import { createProfessionalSchedule, updateProfessionalSchedule } from "../libs/ProfessionalScheduleService";
+import { toast } from 'react-toastify';
 
 type ProfessionalScheduleStoreProps = {
    professionalSchedule: ProfessionalSchedule | null,
@@ -18,14 +19,27 @@ export const useProfessionalScheduleStore = create<ProfessionalScheduleStoreProp
   professionalSchedule: null,
   professionalSchedules: [],
   createProfessionalSchedule: async (professionalSchedule) => {
-     const professionalScheduleResponse: ProfessionalSchedule  = await createProfessionalSchedule(professionalSchedule);
-     set((state) => ({ ...state, 
-      professionalSchedule: professionalScheduleResponse,
-      professionalSchedules: [ ...state.professionalSchedules, professionalScheduleResponse]
-     }));
+    const { data, error } = await createProfessionalSchedule(professionalSchedule);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+
+    if (data) {
+      const professionalScheduleResponse: ProfessionalSchedule  = data;
+      set((state) => ({ ...state, 
+       professionalSchedule: professionalScheduleResponse,
+       professionalSchedules: [ ...state.professionalSchedules, professionalScheduleResponse]
+      }));
+      toast.success("Jornada e horários incluídos", { className: 'toast-message-success' });
+    }
   },
   updateProfessionalSchedule: async (professionalSchedule) => {
-    const professionalScheduleResponse: ProfessionalSchedule = await updateProfessionalSchedule(professionalSchedule);
-    set((state) => ({ ...state, professionalSchedule: professionalScheduleResponse, professionalSchedules: _updateList(state.professionalSchedules, professionalScheduleResponse) }));
+    const { data, error } = await updateProfessionalSchedule(professionalSchedule);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    
+    if (data) {
+      const professionalScheduleResponse: ProfessionalSchedule = data;
+      set((state) => ({ ...state, professionalSchedule: professionalScheduleResponse, professionalSchedules: _updateList(state.professionalSchedules, professionalScheduleResponse) }));
+      toast.success("Jornada e horários atualizados", { className: 'toast-message-success' });
+    }
+
   }
 }));

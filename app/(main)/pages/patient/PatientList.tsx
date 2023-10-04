@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { classNames } from 'primereact/utils';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
-import { Toast } from 'primereact/toast';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -22,7 +21,6 @@ const PatientList = () => {
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
     const [loading, setLoading] = useState(true);
-    const toast = useRef<Toast>(null);
 
     const setPatient = usePatientStore((state) => state.setPatient);
     const patient = usePatientStore((state) => state.patient);
@@ -153,12 +151,6 @@ const PatientList = () => {
         //remover paciente logicamente
         if (patient) {
             removePatient(patient);
-            toast.current?.show({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Paciente excluído',
-                life: 3000
-            });
         }
         setDeleteDialog(false);
     };
@@ -167,8 +159,6 @@ const PatientList = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <Toast ref={toast} />
-
                     <h5>Pacientes</h5>
                     <div className="flex justify-content-between mb-2">
                         <p>Lista de pacientes cadastrados.</p>
@@ -199,7 +189,7 @@ const PatientList = () => {
                     </DataTable>
                 </div>
 
-                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} toast={toast} />
+                <PagientFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
                 <DeleteDialog message={`Confirma a exclusão do paciente ${patient?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemovePatient} />
             </div>
         </div>

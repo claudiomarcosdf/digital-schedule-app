@@ -281,6 +281,7 @@ function convertToProfessionalSchedule(professionalScheduleForm: ProfessionalSch
     
     // FORMATOS ACEITOS
     //"08:00-12:00,13:00-18:00" or "08:00-12:00,null" or "null,13:00-19:00" 
+    // @ts-ignore comment
     const professionalSchedule: ProfessionalSchedule = {
         monday: monday ? monday.trim() : null,
         tuesday: tuesday ? tuesday.trim() : null,

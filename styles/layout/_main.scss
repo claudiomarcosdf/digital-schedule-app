@@ -48,3 +48,39 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
 .p-inactive {
     opacity: 0.6;
 }
+
+.toast-message-success {
+    background: #C8E6C9;
+    color: #224a23;
+    border: solid #439446;
+    opacity: 0.9;
+    margin: 5.6rem 0rem;
+    border-width: 0 0 0 6px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    padding: 1rem;
+}
+
+.toast-message-error {
+    background: #ffcdd2;
+    color: #73000c;
+    border: solid #e60017;
+    opacity: 0.9;
+    margin: 5.6rem 0rem;
+    border-width: 0 0 0 6px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    padding: 1rem;
+}
+
+.toast-message-warning {
+    background: #f1c40f;
+    color: #fff;
+    border-width: 0 0 0 6px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    padding: 1rem;  
+}
+
+
+

@@ -23,10 +23,9 @@ async function createPatient(patient: Patient) {
         body: JSON.stringify(patient)
     });
 
-    if (response.status != 201) {
-        throw new Error('Erro ao incluir paciente');
-    }
-    return await response.json();
+    const error = response.status != 201 ? 'Erro ao incluir paciente' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function updatePatient(patient: Patient) {
@@ -38,10 +37,9 @@ async function updatePatient(patient: Patient) {
         body: JSON.stringify(patient)
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao atualizar paciente');
-    }
-    return await response.json();
+    const error = !response.ok ? 'Erro ao atualizar paciente' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function deletePatient(patient: Patient) {
@@ -52,9 +50,8 @@ async function deletePatient(patient: Patient) {
         }
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao excluir paciente');
-    }
+    const error = !response.ok ? 'Erro ao excluir paciente' : false;
+    return { error };
 }
 
 export { getPatients, createPatient, updatePatient, deletePatient };

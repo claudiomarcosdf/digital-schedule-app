@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type { Patient } from "../types/patient";
 import type { PersonType, Person } from "../types/person";
 import { createPatient, deletePatient, getPatients, updatePatient } from "../libs/PatientService";
+import { toast } from 'react-toastify';
 
 type PatientStoreProps = {
   patient: Patient | null;
@@ -53,19 +54,33 @@ export const usePatientStore = create<PatientStoreProps>((set) => ({
   patients: [],
   setPatient: (patient) => set((state) => ({...state, patient})),
   createPatient: async (patient) => {
-      const patientResponse: Patient  = await createPatient(patient);
+    const { data, error } = await createPatient(patient);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+
+    if (data) {
+      const patientResponse: Patient  = data;
       set((state) => ({ ...state, 
         patient: patientResponse, 
-        patients: [...state.patients, patientResponse] }))
+        patients: [...state.patients, patientResponse] }));
+        toast.success("Paciente incluído", { className: 'toast-message-success' });
+    }
   },  
   updatePatient: async (patient) => {
-    const patientResponse: Patient = await updatePatient(patient);
+    const { data, error } = await updatePatient(patient);
+    error && toast.error(error as string, { className: 'toast-message-error' });
 
-    set((state) => ({ ...state, patient: patientResponse, patients: _updateList(state.patients, patientResponse) }));
+    if (data) {
+      const patientResponse: Patient = data;
+      set((state) => ({ ...state, patient: patientResponse, patients: _updateList(state.patients, patientResponse) }));
+      toast.success("Paciente atualizado", { className: 'toast-message-success' });
+    }
+
   },
   removePatient: async (patient) => {
     patient.person.active = false;
-    await deletePatient(patient);
+    const { error } = await deletePatient(patient);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    
     set((state) => ({ ...state, patients: _updateList(state.patients, patient) }));
   },
   getAllPatient: async () => {

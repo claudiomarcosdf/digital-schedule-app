@@ -2,6 +2,8 @@
 import { LayoutProvider } from '../layout/context/layoutcontext';
 import { PrimeReactProvider } from 'primereact/api';
 import { addLocale, locale } from 'primereact/api';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
@@ -25,6 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </head>
             <body>
                 <PrimeReactProvider>
+                    <ToastContainer autoClose={4000} hideProgressBar />
                     <LayoutProvider>{children}</LayoutProvider>
                 </PrimeReactProvider>
             </body>

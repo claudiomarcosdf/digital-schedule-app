@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Procedure } from "../types/procedure";
 import { createProcedure, getActiveProceduresByProfessionalType, getAllProceduresByProfessionalType, removeProcedure, updateProcedure } from "../libs/ProcedureService";
+import { toast } from 'react-toastify';
 
 type ProcedureStoreProps = {
   procedure: Procedure | null;
@@ -38,18 +39,35 @@ export const useProcedureStore = create<ProcedureStoreProps>((set) => ({
   setProcedure: (procedure) => set((state) => ({...state, procedure})),
 
   createProcedure: async (procedure) => {
-    const procedureResponse: Procedure  = await createProcedure(procedure);
-    set((state) => ({ ...state, procedure: procedureResponse }))
+    // const procedureResponse: Procedure  = await createProcedure(procedure);
+    // set((state) => ({ ...state, procedure: procedureResponse }))
+    const { data, error } = await createProcedure(procedure);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+
+    if (data) {
+      const procedureResponse: Procedure = data;
+      set((state) => ({ ...state, procedure: procedureResponse }));
+      toast.success("Procedimento criado", { className: 'toast-message-success' });
+    }
+    
   }, 
 
   updateProcedure: async (procedure) => {
-    const procedureResponse: Procedure = await updateProcedure(procedure);
-    set((state) => ({ ...state, procedure: procedureResponse, procedures: _updateList(state.procedures, procedureResponse) }));
+      const { data, error } = await updateProcedure(procedure);
+      error && toast.error(error as string, { className: 'toast-message-error' });
+
+      if (data) {
+        const procedureResponse: Procedure = data;
+        set((state) => ({ ...state, procedure: procedureResponse, procedures: _updateList(state.procedures, procedureResponse) }));
+        toast.success("Procedimento atualizado", { className: 'toast-message-success' });
+      }
   },  
 
   removeProcedure: async (procedure) => {
     procedure.active = false;
-    await removeProcedure(procedure);
+    const { error } = await removeProcedure(procedure);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    
     set((state) => ({ ...state, procedures: _updateList(state.procedures, procedure) }));
   },  
 

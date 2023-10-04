@@ -5,7 +5,6 @@ import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
-import { Toast } from 'primereact/toast';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
@@ -21,7 +20,6 @@ const ProfessionalList = () => {
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [titleDialog, setTitleDialog] = useState('');
     const [loading, setLoading] = useState(true);
-    const toast = useRef<Toast>(null);
 
     const setProfessional = useProfessionalStore((state) => state.setProfessional);
     const professional = useProfessionalStore((state) => state.professional);
@@ -151,12 +149,6 @@ const ProfessionalList = () => {
         //remover profissional logicamente
         if (professional) {
             removeProfessional(professional);
-            toast.current?.show({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Profissional excluído',
-                life: 3000
-            });
         }
         setDeleteDialog(false);
     };
@@ -165,8 +157,6 @@ const ProfessionalList = () => {
         <div className="grid">
             <div className="col-12">
                 <div className="card">
-                    <Toast ref={toast} />
-
                     <h5>Profissionais</h5>
                     <div className="flex justify-content-between mb-2">
                         <p>Lista de profissionais cadastrados.</p>
@@ -197,7 +187,7 @@ const ProfessionalList = () => {
                     </DataTable>
                 </div>
 
-                <ProfessionalFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} toast={toast} />
+                <ProfessionalFormDialog title={titleDialog} visible={openDialog} hideDialog={hideDialog} />
                 <DeleteDialog message={`Confirma a exclusão do profissional ${professional?.person.fullName}`} visible={deleteDialog} hideDeleteDialog={hideDeleteDialog} removeClick={onRemoveProfessional} />
             </div>
         </div>

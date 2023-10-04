@@ -27,10 +27,14 @@ async function createProcedure(procedure: Procedure) {
         body: JSON.stringify(procedure)
     });
 
-    if (response.status != 201) {
-        throw new Error('Erro ao incluir procedimento');
-    }
-    return await response.json();
+    // if (response.status != 201) {
+    //     throw new Error('Erro ao incluir procedimento');
+    // }
+    // return await response.json();
+
+    const error = response.status != 201 ? 'Erro ao incluir procedimento' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function updateProcedure(procedure: Procedure) {
@@ -42,10 +46,9 @@ async function updateProcedure(procedure: Procedure) {
         body: JSON.stringify(procedure)
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao atualizar procedimento');
-    }
-    return await response.json();
+    const error = !response.ok ? 'Erro ao atualizar procedimento' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function removeProcedure(procedure: Procedure) {
@@ -56,9 +59,8 @@ async function removeProcedure(procedure: Procedure) {
         }
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao excluir procedimento');
-    }
+    const error = !response.ok ? 'Erro ao excluir procedimento' : false;
+    return { error };
 }
 
 export { getAllProceduresByProfessionalType, getActiveProceduresByProfessionalType, createProcedure, updateProcedure, removeProcedure };

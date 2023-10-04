@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type { PersonType, Person } from "../types/person";
 import { Professional, ProfessionalType } from "../types/professional";
 import { createProfessional, deleteProfessional, getProfessionals, updateProfessional } from "../libs/ProfessionalService";
+import { toast } from 'react-toastify';
 
 type ProfessionalStoreProps = {
   professional: Professional | null;
@@ -99,19 +100,32 @@ export const useProfessionalStore = create<ProfessionalStoreProps>((set) => ({
   professionals: [],
   setProfessional: (professional) => set((state) => ({ ...state, professional })),
   createProfessional: async (professional) => {
-    const professionalResponse: Professional = await createProfessional(professional);
-    set((state) => ({
-      ...state, professional: professionalResponse, professionals: [...state.professionals, professionalResponse]
-    }))
+    const { data, error } = await createProfessional(professional);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+
+    if (data) {
+      const professionalResponse: Professional = data;
+      set((state) => ({
+        ...state, professional: professionalResponse, professionals: [...state.professionals, professionalResponse]
+      }))
+      toast.success("Profissional incluído", { className: 'toast-message-success' });
+    }
   },
   updateProfessional: async (professional) => {
-    const professionalResponse: Professional = await updateProfessional(professional);
+    const { data, error } = await updateProfessional(professional);
+    error && toast.error(error as string, { className: 'toast-message-error' });
 
-    set((state) => ({ ...state, professional: professionalResponse, professionals: _updateList(state.professionals, professionalResponse) }));
+    if (data) {
+      const professionalResponse: Professional = data;
+      set((state) => ({ ...state, professional: professionalResponse, professionals: _updateList(state.professionals, professionalResponse) }));
+      toast.success("Profissional atualizado", { className: 'toast-message-success' });
+    }
   },
   removeProfessional: async (professional) => {
     professional.person.active = false;
-    await deleteProfessional(professional);
+    const { error } = await deleteProfessional(professional);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    
     set((state) => ({ ...state, professionals: _updateList(state.professionals, professional) }));
   },
   getAllProfessional: async () => {

@@ -12,7 +12,7 @@ import { Procedure } from '../../../../types/procedure';
 import { ProfessionalType } from '../../../../types/professional';
 import { validPrice } from '../../../helpers/utils';
 
-const ProcedureFormDialog = ({ title, visible, hideDialog, toast }: any) => {
+const ProcedureFormDialog = ({ title, visible, hideDialog }: any) => {
     const [procedure, setProcedure] = useState<Procedure | null>(initialProcedure);
     const [submitted, setSubmitted] = useState(false);
 
@@ -75,20 +75,15 @@ const ProcedureFormDialog = ({ title, visible, hideDialog, toast }: any) => {
         if (procedure?.name && procedure.price) {
             if (procedure?.id) {
                 updateProcedure(procedure);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Procedimento atualizado',
-                    life: 3000
-                });
             } else {
+                //procedure.name = '';
                 createProcedure(procedure);
-                toast.current?.show({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Procedimento criado',
-                    life: 3000
-                });
+                // toast.current?.show({
+                //     severity: 'error',
+                //     summary: 'Sucesso',
+                //     detail: 'Procedimento criado',
+                //     life: 3000
+                // });
             }
             hideDialog();
         }

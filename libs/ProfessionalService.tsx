@@ -23,10 +23,9 @@ async function createProfessional(professional: Professional) {
         body: JSON.stringify(professional)
     });
 
-    if (response.status != 201) {
-        throw new Error('Erro ao incluir profissional');
-    }
-    return await response.json();
+    const error = response.status != 201 ? 'Erro ao incluir profissional' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function updateProfessional(professional: Professional) {
@@ -38,10 +37,9 @@ async function updateProfessional(professional: Professional) {
         body: JSON.stringify(professional)
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao atualizar profissional');
-    }
-    return await response.json();
+    const error = !response.ok ? 'Erro ao atualizar profissional' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 async function deleteProfessional(professional: Professional) {
@@ -52,9 +50,8 @@ async function deleteProfessional(professional: Professional) {
         }
     });
 
-    if (!response.ok) {
-        throw new Error('Erro ao excluir profissional');
-    }
+    const error = !response.ok ? 'Erro ao excluir profissional' : false;
+    return { error };
 }
 
 export { getProfessionals, createProfessional, updateProfessional, deleteProfessional };

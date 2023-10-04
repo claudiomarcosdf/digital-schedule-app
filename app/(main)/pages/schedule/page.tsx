@@ -30,7 +30,7 @@ const SchedulePage = () => {
         currentEvents: []
     });
 
-    const handleDateClick = (arg) => {
+    const handleDateClick = (arg: any) => {
         alert(arg.dateStr);
     };
 
@@ -70,7 +70,7 @@ const SchedulePage = () => {
         );
     }
 
-    function renderSidebarEvent(event) {
+    function renderSidebarEvent(event: any) {
         return (
             <li key={event.id}>
                 {/* <b>{formatDate(event.start, { year: 'numeric', month: 'short', day: 'numeric' })}</b> */}
