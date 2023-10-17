@@ -20,7 +20,7 @@ const initialProfessionalType = {
   active: true
 }
 
-export const initialProcedure =  {
+export const initialProcedure: Procedure =  {
   id: null,
   name: '',
   price: 0.00,

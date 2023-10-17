@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import type { PersonType, Person } from "../types/person";
 import { Professional, ProfessionalType } from "../types/professional";
-import { createProfessional, deleteProfessional, getProfessionals, updateProfessional } from "../libs/ProfessionalService";
+import { createProfessional, deleteProfessional, getProfessionals, getProfessionalsByType, updateProfessional } from "../libs/ProfessionalService";
 import { toast } from 'react-toastify';
 
 type ProfessionalStoreProps = {
@@ -13,6 +13,7 @@ type ProfessionalStoreProps = {
   updateProfessional: (professional: Professional) => void;
   removeProfessional: (professional: Professional) => void;
   getAllProfessional: () => void;
+  getProfessionalsByType: (professionalTypeId: number) => void;
 }
 
 const initialPersonType: PersonType = {
@@ -37,7 +38,7 @@ const initialPerson: Person = {
   personType: initialPersonType
 };
 
-const initialProfessionalType: ProfessionalType = {
+export const initialProfessionalType: ProfessionalType = {
   id: null,
   name: "",
   active: true
@@ -130,6 +131,10 @@ export const useProfessionalStore = create<ProfessionalStoreProps>((set) => ({
   },
   getAllProfessional: async () => {
     const professionals: Professional[] = await getProfessionals();
+    set((state) => ({...state, professionals}))
+  },
+  getProfessionalsByType: async (professionalTypeId: number) => {
+    const professionals: Professional[] = await getProfessionalsByType(professionalTypeId);
     set((state) => ({...state, professionals}))
   }
 }));

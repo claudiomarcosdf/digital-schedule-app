@@ -54,4 +54,13 @@ async function deleteProfessional(professional: Professional) {
     return { error };
 }
 
-export { getProfessionals, createProfessional, updateProfessional, deleteProfessional };
+async function getProfessionalsByType(professionalTypeId: number) {
+    const response = await fetch('/api/professionals/professionaltype/' + professionalTypeId);
+
+    if (!response.ok) {
+        throw new Error('Erro ao listar profissionais pelo tipo');
+    }
+    return await response.json();
+}
+
+export { getProfessionals, createProfessional, updateProfessional, deleteProfessional, getProfessionalsByType };

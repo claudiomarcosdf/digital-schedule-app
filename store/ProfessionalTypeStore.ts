@@ -5,6 +5,7 @@ import { ProfessionalType } from "../types/professional";
 type ProfessionalTypeStoreProps = {
   professionalType: ProfessionalType | null,
   professionalTypes: ProfessionalType[],
+  setProfessionalType: (professionalType: ProfessionalType | null) => void;
   createProfessionalType: (professionalType: ProfessionalType) => void,
   getAllProfessionalTypes: () => void
 }
@@ -12,6 +13,7 @@ type ProfessionalTypeStoreProps = {
 export const useProfessionalTypeStore = create<ProfessionalTypeStoreProps>((set) => ({
    professionalType: null,
    professionalTypes: [],
+   setProfessionalType: (professionalType) => set((state) => ({ ...state, professionalType })),
    createProfessionalType: async (professionalType) => {
       const professionalTypeResponse: ProfessionalType  = await createProfessionalType(professionalType);
       set((state) => ({ ...state, 

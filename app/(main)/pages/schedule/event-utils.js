@@ -10,7 +10,8 @@ export const INITIAL_EVENTS = [
     {
         id: createEventId(),
         title: '\u2013 Timed event ',
-        start: todayStr + 'T12:00:00'
+        start: todayStr + 'T12:00:00',
+        eventColor: 'orange'
     }
 ];
 

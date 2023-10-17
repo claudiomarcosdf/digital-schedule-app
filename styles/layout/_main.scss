@@ -49,6 +49,46 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
     opacity: 0.6;
 }
 
+.card-professionaltype {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border: solid 0.2px #dee2e6;
+    border-radius: 12px;
+    margin-right: 15px;
+    padding: 10px 10px;
+}
+
+.item-profissionaltype {
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    min-height: 70%;
+}
+
+.box-professional {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100vw;
+    margin: 0 160px 20px 0;
+}
+
+.combo-professional {
+    width: 400px; 
+    border-radius: 8px;
+    font-weight: bolder;
+}
+
+.professional-legend {
+    font-size: .875rem;
+    border-left: solid 1px;
+    margin-left: 5px;
+    padding-left: 5px;
+}
+
 .toast-message-success {
     background: #C8E6C9;
     color: #224a23;
@@ -80,6 +120,19 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
     border-radius: 3px;
     padding: 1rem;  
+}
+
+.overlay-spinner {
+    position: absolute;
+    z-index: 100;
+    height: 4em;
+    width: 4em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
 }
 
 

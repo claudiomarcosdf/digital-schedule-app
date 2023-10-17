@@ -1,5 +1,6 @@
 import { initialProfessionalScheduleForm } from '../../store/ProfessionalStore';
 import { ProfessionalSchedule, ProfessionalSchedulePropsForm } from './../../types/professional.d';
+import moment from 'moment';
 
 function formatCurrency(value: number) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -44,6 +45,14 @@ function formatDateBr(date: string) {
     return dateFormated;
 }
 
+function getFormatedDate(date: string) {
+    const day = moment(date).format('DD');
+    const month = moment(date).format('MM');
+    const year = moment(date).format('YYYY');
+
+    return moment(year+"-"+month+"-"+day).format("YYYY-MM-DD");
+}
+
 //Retorna primeira letra em Caixa alta
 function capitalize(value: string) {
     const textLowerCase = value.toLowerCase();
@@ -56,6 +65,14 @@ function capitalizeFullName(value: string) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
     return splitStr.join(' ');
+}
+
+function capitalizeShortName(value: string) {
+    var splitStr = value.toLowerCase().split(' ');
+    splitStr[0] = splitStr[0].charAt(0).toUpperCase() + splitStr[0].substring(1);
+    const ultimaPosicao = splitStr.length-1;
+    splitStr[ultimaPosicao] = splitStr[ultimaPosicao].charAt(0).toUpperCase() + splitStr[ultimaPosicao].substring(1);
+    return splitStr[0]+" "+splitStr[ultimaPosicao];
 }
 
 function formatCpfToView(value: string) {
@@ -295,4 +312,22 @@ function convertToProfessionalSchedule(professionalScheduleForm: ProfessionalSch
     return professionalSchedule;
 }
 
-export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, capitalize, capitalizeFullName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule };
+function getColorStatus(status: string) {
+
+    switch (status.toUpperCase as any) {
+        case "AGENDADO":
+            return '#009EFA'
+        case "CONFIRMADO":
+            return '#00C9A7'
+        case "PRESENTE":
+            return '#005B44'
+        case "FINALIZADO":
+            return '#4B4453'     
+        case "CANCELADO":
+            return '#FF8066'
+        default:
+            return '#009EFA'
+    }
+}
+
+export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
