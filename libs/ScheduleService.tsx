@@ -1,7 +1,7 @@
 import { Schedule } from '../types/schedule';
 
-async function getSchedulesByProfessional(professionalTypeId: number, professionalId: number) {
-    const response = await fetch(`/api/schedules?professionalTypeId=${professionalTypeId}&professionalId=${professionalId}`);
+async function getSchedulesByProfessional(professionalTypeId: number, professionalId: number, startDate: string, endDate: string) {
+    const response = await fetch(`/api/schedules?professionalTypeId=${professionalTypeId}&professionalId=${professionalId}&startDate=${startDate}&endDate=${endDate}`);
 
     if (!response.ok) {
         throw new Error('Erro ao listar agendas do profissional');

@@ -58,15 +58,20 @@ const SchedulePage = () => {
         alert(arg.dateStr);
     };
 
-    const handleNavigationClick = (arg: any) => {
+    const handleNavigationClick = async (arg: any) => {
         setLoading(true);
 
-        const dataInicio = getFormatedDate(arg.view.currentStart);
-        const dataFim = getFormatedDate(arg.view.currentEnd);
+        const startDate = getFormatedDate(arg.view.currentStart);
+        const endDate = getFormatedDate(arg.view.currentEnd);
 
-        setTimeout(() => {
-            setLoading(false);
-        }, 4000);
+        const professionalTypeId: number = professionalType?.id || 0;
+        const professionalId: number = dropdownValue?.id || 0;
+
+        await getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
+        setLoading(false);
+        // setTimeout(() => {
+        //     setLoading(false);
+        // }, 4000);
 
         //alert('Navigation click inicio: ' + dataInicio + '\n' + 'Fim: ' + dataFim);
     };
@@ -121,7 +126,10 @@ const SchedulePage = () => {
         setDropdownValue(professional);
         const professionalTypeId: number = professionalType?.id || 0;
         const professionalId: number = professional?.id || 0;
-        getSchedulesByProfessional(professionalTypeId, professionalId);
+        const startDate = getFormatedDate(new Date().toISOString());
+        const endDate = getFormatedDate(new Date().toISOString());
+
+        getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
     };
 
     return (

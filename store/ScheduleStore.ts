@@ -23,7 +23,7 @@ type ScheduleStoreProps = {
   createSchedule: (schedule: Schedule) => void;
   updateSchedule: (schedule: Schedule) => void;
   removeSchedule: (schedule: Schedule) => void;
-  getSchedulesByProfessional: (professionalTypeId: number, professionalId: number) => void;
+  getSchedulesByProfessional: (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => void;
 }
 
 
@@ -94,8 +94,8 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
     
     set((state) => ({ ...state, schedules: _updateList(state.schedules, schedule) }));
   },
-  getSchedulesByProfessional: async (professionalTypeId: number, professionalId: number) => {
-    const schedulesApi: Schedule[] = await getSchedulesByProfessional(professionalTypeId, professionalId);
+  getSchedulesByProfessional: async (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => {
+    const schedulesApi: Schedule[] = await getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
     const schedules: ScheduleEvents = convertToScheduleEvents(schedulesApi);
 
     // @ts-ignore comment
