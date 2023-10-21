@@ -5,10 +5,10 @@ import { Professional, ProfessionalSchedule, ProfessionalSchedulePropsForm } fro
 import { initialProfessional, useProfessionalStore } from '../../../../store/ProfessionalStore';
 import { classNames } from 'primereact/utils';
 import { Button } from 'primereact/button';
-import { validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule } from '../../../helpers/utils';
+import { validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule } from '../../../../helpers/utils';
 import { useProfessionalScheduleStore } from '../../../../store/ProfessionalScheduleStore';
 
-function JornadaHorariosFormDialog({ hideDialog }: any) {
+function WorkHoursForm({ hideDialog }: any) {
     const [professional, setProfessional] = useState<Professional | null>(initialProfessional);
     const [professionalScheduleForm, setProfessionalScheduleForm] = useState<ProfessionalSchedulePropsForm>();
 
@@ -476,4 +476,4 @@ function JornadaHorariosFormDialog({ hideDialog }: any) {
     );
 }
 
-export default JornadaHorariosFormDialog;
+export default WorkHoursForm;

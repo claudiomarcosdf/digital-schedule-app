@@ -1,5 +1,5 @@
-import { initialProfessionalScheduleForm } from '../../store/ProfessionalStore';
-import { ProfessionalSchedule, ProfessionalSchedulePropsForm } from './../../types/professional.d';
+import { initialProfessionalScheduleForm } from '../store/ProfessionalStore';
+import { ProfessionalSchedule, ProfessionalSchedulePropsForm } from '../types/professional';
 import moment from 'moment';
 
 function formatCurrency(value: number) {
@@ -51,6 +51,21 @@ function getFormatedDate(date: string) {
     const year = moment(date).format('YYYY');
 
     return moment(year+"-"+month+"-"+day).format("YYYY-MM-DD");
+}
+
+function getFormatedDateTime(dateTime: string) {
+    const day = moment(dateTime).format('DD');
+    const month = moment(dateTime).format('MM');
+    const year = moment(dateTime).format('YYYY');
+
+    const hours = moment(dateTime).format('HH');
+    const minuts = moment(dateTime).format('mm');
+
+    return moment(year+"-"+month+"-"+day+'T'+hours+":"+minuts).format("YYYY-MM-DDTHH:mm");
+}
+
+function addMinutes(dateTime: Date, minutes: number) {
+    return moment(dateTime).add(minutes, 'm').toDate();
 }
 
 //Retorna primeira letra em Caixa alta
@@ -318,11 +333,11 @@ function getColorStatus(status: string) {
         case "AGENDADO":
             return '#009EFA'
         case "CONFIRMADO":
-            return '#00C9A7'
+            return '#F9F871'
         case "PRESENTE":
-            return '#005B44'
+            return '#00C9A7'
         case "FINALIZADO":
-            return '#4B4453'     
+            return '#DCB0FF'     
         case "CANCELADO":
             return '#FF8066'
         default:
@@ -330,4 +345,4 @@ function getColorStatus(status: string) {
     }
 }
 
-export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
+export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };

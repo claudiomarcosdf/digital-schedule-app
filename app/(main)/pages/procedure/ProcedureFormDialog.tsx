@@ -10,7 +10,7 @@ import { initialProcedure, useProcedureStore } from '../../../../store/Procedure
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
 import { Procedure } from '../../../../types/procedure';
 import { ProfessionalType } from '../../../../types/professional';
-import { validPrice } from '../../../helpers/utils';
+import { validPrice } from '../../../../helpers/utils';
 
 const ProcedureFormDialog = ({ title, visible, hideDialog }: any) => {
     const [procedure, setProcedure] = useState<Procedure | null>(initialProcedure);

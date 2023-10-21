@@ -32,7 +32,7 @@ export interface Schedule {
   professionalType: ProfessionalType;
   professional: ProfessionalSchedule;
   patient: PatientSchedule;
-  procedure: Procedure;
+  procedure?: Procedure | null;
   status?: string | null;
   active?: boolean | null;
   createdDate?: string | null;

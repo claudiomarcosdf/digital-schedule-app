@@ -1,14 +1,13 @@
 import { create } from "zustand";
 import { toast } from 'react-toastify';
 
-import { Schedule } from "../types/schedule";
+import { PatientSchedule, Schedule } from "../types/schedule";
 import { initialProfessional, initialProfessionalType } from "./ProfessionalStore";
-import { initialPatient } from "./PatientStore";
 import { initialProcedure } from "./ProcedureStore";
 import { createSchedule, deleteSchedule, getSchedulesByProfessional, updateSchedule } from "../libs/ScheduleService";
-import { capitalizeShortName, getColorStatus } from "../app/helpers/utils";
+import { capitalizeShortName, getColorStatus } from "../helpers/utils";
 
-type ScheduleEvents = {
+type ScheduleEvent = {
   id: string;
   title: string;
   start: string;
@@ -18,7 +17,7 @@ type ScheduleEvents = {
 
 type ScheduleStoreProps = {
   schedule: Schedule | null;
-  schedules: ScheduleEvents[];
+  schedules: ScheduleEvent[];
   setSchedule: (schedule: Schedule | null) => void;
   createSchedule: (schedule: Schedule) => void;
   updateSchedule: (schedule: Schedule) => void;
@@ -26,6 +25,15 @@ type ScheduleStoreProps = {
   getSchedulesByProfessional: (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => void;
 }
 
+const initialPatientSchedule: PatientSchedule = {
+  id: 0,
+  fullName: '',
+  birthDay: '',
+  gender: '',
+  cpf: '',
+  phone: '',
+  phone2: ''
+}
 
 export const initialSchedule: Schedule = {
   id: null,
@@ -37,7 +45,7 @@ export const initialSchedule: Schedule = {
   status: 'AGENDADO',
   professionalType: initialProfessionalType,
   professional: initialProfessional,
-  patient: initialPatient,
+  patient: initialPatientSchedule,
   procedure: initialProcedure
 }
 
@@ -46,20 +54,26 @@ const _updateList = (value: any, objToFin: any) => {
   return value;
 }
 
-const convertToScheduleEvents = (schedules: Schedule[]) => {
+const convertToScheduleEvent = (schedule: Schedule) : ScheduleEvent => {
   // @ts-ignore comment
-   const scheduleEvents: ScheduleEvents = schedules.map((schedule) => {
-     return {
-      id: schedule.id?.toString(),
+   return {
+      id: schedule.id?.toString() || '',
       title: "\u2013" + capitalizeShortName(schedule.patient.fullName),
       start: schedule.startDate,
       end: schedule.endDate,
       backgroundColor: getColorStatus(schedule.status || '')
-     }
+  }
+}
+
+const convertToScheduleEvents = (schedules: Schedule[]): ScheduleEvent[] => {
+  // @ts-ignore comment
+   const scheduleEvents: ScheduleEvent[] = schedules.map((schedule) => {
+     return convertToScheduleEvent(schedule);
    })
 
    return scheduleEvents;
 }
+
 
 export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
   schedule: initialSchedule,
@@ -71,8 +85,9 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
 
     if (data) {
       const scheduleResponse: Schedule = data;
+      const schedule: ScheduleEvent = convertToScheduleEvent(scheduleResponse);
       set((state) => ({
-        ...state, schedule: scheduleResponse, schedules: [...state.schedules, scheduleResponse]
+        ...state, schedule: scheduleResponse, schedules: [...state.schedules, schedule]
       }))
       toast.success("Agendamento criado", { className: 'toast-message-success' });
     }
@@ -96,7 +111,7 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
   },
   getSchedulesByProfessional: async (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => {
     const schedulesApi: Schedule[] = await getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
-    const schedules: ScheduleEvents = convertToScheduleEvents(schedulesApi);
+    const schedules: ScheduleEvent[] = convertToScheduleEvents(schedulesApi);
 
     // @ts-ignore comment
     set((state) => ({...state, schedules}));

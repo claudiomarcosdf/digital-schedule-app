@@ -11,7 +11,7 @@ import type { Patient } from '../../../../types/types';
 import { usePatientStore } from '../../../../store/PatientStore';
 import PagientFormDialog from './PatientFormDialog';
 import DeleteDialog from '../../../../common/DeleteDialog';
-import { formatCpfToView, formatDateBr, formatPhone } from '../../../helpers/utils';
+import { formatCpfToView, formatDateBr, formatPhone } from '../../../../helpers/utils';
 //import { getPatients } from '../../../../libs/apiPatients';
 
 const PatientList = () => {

@@ -22,7 +22,7 @@ const ScheduleTypes = () => {
                 {professionalTypes.length > 0 ? (
                     professionalTypes.map((item) => <Button key={item.id} onClick={() => onSelectProfessionalType(item)} className="item-profissionaltype" icon="pi pi-calendar-times" label={item.name} style={{ borderRadius: '6px' }}></Button>)
                 ) : (
-                    <p className="text-primary">carregando...</p>
+                    <p className="text-primary scalein animation-duration-1000 animation-iteration-infinite">carregando...</p>
                 )}
             </div>
         </>

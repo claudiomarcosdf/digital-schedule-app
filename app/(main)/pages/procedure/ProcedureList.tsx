@@ -12,7 +12,7 @@ import { Procedure } from '../../../../types/procedure';
 import { classNames } from 'primereact/utils';
 import ProcedureFormDialog from './ProcedureFormDialog';
 import DeleteDialog from '../../../../common/DeleteDialog';
-import { formatCurrency } from '../../../helpers/utils';
+import { formatCurrency } from '../../../../helpers/utils';
 
 const ProcedureList = () => {
     const [filters, setFilters] = useState<DataTableFilterMeta>({});

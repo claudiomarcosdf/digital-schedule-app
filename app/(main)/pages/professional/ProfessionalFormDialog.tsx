@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { TabPanel, TabView } from 'primereact/tabview';
-import DadosPessoaisFormDialog from './DadosPessoaisFormDialog';
-import JornadaHorariosFormDialog from './JornadaHorariosFormDialog';
+import PersonalDataForm from './PersonalDataForm';
+import WorkHoursForm from './WorkHoursForm';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 
 const ProfessionalFormDialog = ({ title, visible, hideDialog }: any) => {
@@ -13,10 +13,10 @@ const ProfessionalFormDialog = ({ title, visible, hideDialog }: any) => {
             <Dialog visible={visible} style={{ width: '750px' }} header={title} modal className="p-fluid" onHide={hideDialog}>
                 <TabView>
                     <TabPanel header="Dados pessoais">
-                        <DadosPessoaisFormDialog hideDialog={hideDialog} />
+                        <PersonalDataForm hideDialog={hideDialog} />
                     </TabPanel>
                     <TabPanel header="Jornada e horários" disabled={professionalStore?.id ? false : true}>
-                        <JornadaHorariosFormDialog hideDialog={hideDialog} />
+                        <WorkHoursForm hideDialog={hideDialog} />
                     </TabPanel>
                 </TabView>
             </Dialog>

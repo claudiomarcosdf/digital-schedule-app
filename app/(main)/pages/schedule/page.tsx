@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { DateSelectArg, EventApi, EventClickArg, FormatterInput, formatDate } from '@fullcalendar/core';
+import { DateSelectArg, DatesSetArg, EventApi, EventClickArg, FormatterInput, formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
@@ -16,10 +16,12 @@ import ScheduleTypes from './ScheduleTypes';
 import { Professional } from '../../../../types/professional';
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
-import { useScheduleStore } from '../../../../store/ScheduleStore';
-import { getFormatedDate } from '../../../helpers/utils';
+import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
+import { getFormatedDate } from '../../../../helpers/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { BlockUI } from 'primereact/blockui';
+import ScheduleFormDialog from './ScheduleFormDialog';
+import { Schedule } from '../../../../types/schedule';
 
 const comboProfessionalStyle = { minWidth: '250px', borderRadius: '8px', fontWeight: 'bolder' };
 
@@ -37,8 +39,9 @@ type stateType = {
 };
 
 const SchedulePage = () => {
+    const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [dropdownValue, setDropdownValue] = useState<Professional | null>(null);
+    //const [professional, setProfessional] = useState<Professional | null>(null);
     const [state, setState] = useState<stateType>({
         weekendsVisible: true,
         currentEvents: []
@@ -47,8 +50,11 @@ const SchedulePage = () => {
     const professionalType = useProfessionalTypeStore((state) => state.professionalType);
     const getProfessionalsByType = useProfessionalStore((state) => state.getProfessionalsByType);
     const professionals = useProfessionalStore((state) => state.professionals);
+    const setProfessional = useProfessionalStore((state) => state.setProfessional);
+    const professional = useProfessionalStore((state) => state.professional);
     const getSchedulesByProfessional = useScheduleStore((state) => state.getSchedulesByProfessional);
     const schedules = useScheduleStore((state) => state.schedules);
+    const setSchedule = useScheduleStore((state) => state.setSchedule);
 
     useEffect(() => {
         getProfessionalsByType(professionalType?.id || 0);
@@ -58,16 +64,18 @@ const SchedulePage = () => {
         alert(arg.dateStr);
     };
 
-    const handleNavigationClick = async (arg: any) => {
+    const handleNavigationClick = async (arg: DatesSetArg) => {
         setLoading(true);
 
-        const startDate = getFormatedDate(arg.view.currentStart);
-        const endDate = getFormatedDate(arg.view.currentEnd);
+        const startDate = getFormatedDate(arg.view.currentStart.toISOString());
+        const endDate = getFormatedDate(arg.view.currentEnd.toISOString());
 
         const professionalTypeId: number = professionalType?.id || 0;
-        const professionalId: number = dropdownValue?.id || 0;
+        const professionalId: number = professional?.id || 0;
 
-        await getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
+        if (professionalTypeId && professionalId && startDate && endDate) {
+            await getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
+        }
         setLoading(false);
         // setTimeout(() => {
         //     setLoading(false);
@@ -77,20 +85,35 @@ const SchedulePage = () => {
     };
 
     const handleDateSelect = (selectInfo: DateSelectArg) => {
-        let title = prompt('Please enter a new title for your event');
+        //let title = prompt('Please enter a new title for your event');
         let calendarApi = selectInfo.view.calendar;
-
         calendarApi.unselect(); // clear date selection
 
-        if (title) {
-            calendarApi.addEvent({
-                id: createEventId(),
-                title,
-                start: selectInfo.startStr,
-                end: selectInfo.endStr,
-                allDay: selectInfo.allDay
-            });
+        if (professional?.id) {
+            const newSchedule: Schedule = initialSchedule;
+            newSchedule.startDate = selectInfo.start.toString();
+            newSchedule.endDate = selectInfo.start.toString();
+            if (professionalType) newSchedule.professionalType = professionalType;
+            newSchedule.professional = professional;
+            newSchedule.procedure = null;
+            setSchedule({ ...newSchedule });
+
+            setOpenDialog(true);
         }
+
+        // if (title) {
+        //     calendarApi.addEvent({
+        //         id: createEventId(),
+        //         title,
+        //         start: selectInfo.startStr,
+        //         end: selectInfo.endStr,
+        //         allDay: selectInfo.allDay
+        //     });
+        // }
+    };
+
+    const hideDialog = () => {
+        setOpenDialog(false);
     };
 
     const handleEventClick = (clickInfo: EventClickArg) => {
@@ -123,7 +146,7 @@ const SchedulePage = () => {
     }
 
     const handleDropdown = (professional: Professional | null) => {
-        setDropdownValue(professional);
+        setProfessional(professional);
         const professionalTypeId: number = professionalType?.id || 0;
         const professionalId: number = professional?.id || 0;
         const startDate = getFormatedDate(new Date().toISOString());
@@ -152,7 +175,7 @@ const SchedulePage = () => {
                                     <div style={{ width: '14.8rem' }}></div>
                                 )}
                                 <div className="box-professional">
-                                    <Dropdown style={comboProfessionalStyle} value={dropdownValue} onChange={(e) => handleDropdown(e.value)} options={professionals} optionLabel="nickName" placeholder="Selecione o profissional" />
+                                    <Dropdown style={comboProfessionalStyle} value={professional} onChange={(e) => handleDropdown(e.value)} options={professionals} optionLabel="nickName" placeholder="Selecione o profissional" />
                                 </div>
                             </div>
                             <BlockUI blocked={loading}>
@@ -219,10 +242,11 @@ const SchedulePage = () => {
                             </BlockUI>
                         </div>
                     </div>
+                    <ScheduleFormDialog title={professional?.nickName} visible={openDialog} hideDialog={hideDialog} />
                 </div>
             </div>
             <div className="demo-app-sidebar-section">
-                <h2>All Events ({state.currentEvents.length})</h2>
+                <h2>Agendamentos ({state.currentEvents.length})</h2>
                 <ul>{state.currentEvents.map(renderSidebarEvent)}</ul>
             </div>
         </>

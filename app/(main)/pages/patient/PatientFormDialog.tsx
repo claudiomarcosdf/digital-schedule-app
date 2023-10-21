@@ -9,7 +9,7 @@ import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber
 import type { Patient } from '../../../../types/patient';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { maskPhone } from '../../../helpers/utils';
+import { maskPhone } from '../../../../helpers/utils';
 
 const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
     const [patient, setPatient] = useState<Patient | null>(initialPatient);

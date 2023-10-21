@@ -4,9 +4,17 @@ async function getPatients() {
     const response = await fetch('/api/patients');
 
     if (!response.ok) {
-        throw new Error('Erro ao buscar pacientes');
+        throw new Error('Erro ao listar pacientes');
     }
     return await response.json();
+}
+
+async function findPatientsByName(name: string) {
+    const response = await fetch('/api/patients/name/' + name);
+
+    const error = !response.ok ? 'Erro ao buscar paciente' : false;
+    const data = error ? null : await response.json();
+    return { error, data };
 }
 
 // headers: {
@@ -54,4 +62,4 @@ async function deletePatient(patient: Patient) {
     return { error };
 }
 
-export { getPatients, createPatient, updatePatient, deletePatient };
+export { getPatients, findPatientsByName, createPatient, updatePatient, deletePatient };

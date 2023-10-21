@@ -11,7 +11,7 @@ import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import type { Professional } from '../../../../types/types';
 import DeleteDialog from '../../../../common/DeleteDialog';
 import ProfessionalFormDialog from './ProfessionalFormDialog';
-import { formatPhone } from '../../../helpers/utils';
+import { formatPhone } from '../../../../helpers/utils';
 
 const ProfessionalList = () => {
     const [filters, setFilters] = useState<DataTableFilterMeta>({});

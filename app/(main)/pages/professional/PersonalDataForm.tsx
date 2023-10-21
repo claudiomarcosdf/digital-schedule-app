@@ -7,12 +7,12 @@ import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber
 import type { Professional, ProfessionalType } from '../../../../types/professional';
 import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
-import { maskPhone } from '../../../helpers/utils';
+import { maskPhone } from '../../../../helpers/utils';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
 import { initialProfessional, useProfessionalStore } from '../../../../store/ProfessionalStore';
 
-export default function DadosPessoaisFormDialog({ hideDialog }: any) {
+export default function PersonalDataForm({ hideDialog }: any) {
     const [professional, setProfessional] = useState<Professional | null>(initialProfessional);
     const [submitted, setSubmitted] = useState(false);
 

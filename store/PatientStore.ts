@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import type { Patient } from "../types/patient";
 import type { PersonType, Person } from "../types/person";
-import { createPatient, deletePatient, getPatients, updatePatient } from "../libs/PatientService";
+import { createPatient, deletePatient, findPatientsByName, getPatients, updatePatient } from "../libs/PatientService";
 import { toast } from 'react-toastify';
 
 type PatientStoreProps = {
@@ -12,6 +12,7 @@ type PatientStoreProps = {
   createPatient: (patient: Patient) => void;
   updatePatient: (patient: Patient) => void;
   removePatient: (patient: Patient) => void;
+  findPatientsByName: (name: string) => void;
   getAllPatient: () => void;
 }
 
@@ -82,6 +83,14 @@ export const usePatientStore = create<PatientStoreProps>((set) => ({
     error && toast.error(error as string, { className: 'toast-message-error' });
     
     set((state) => ({ ...state, patients: _updateList(state.patients, patient) }));
+  },
+  findPatientsByName: async (name: string) => {
+    const { data, error } = await findPatientsByName(name);
+    error && toast.error(error as string, { className: 'toast-message-error' });
+
+    const patientsResponse: Patient[] = data;
+    console.log(patientsResponse)
+    set((state) => ({...state, patients: patientsResponse}));
   },
   getAllPatient: async () => {
       const patients: Patient[] = await getPatients();

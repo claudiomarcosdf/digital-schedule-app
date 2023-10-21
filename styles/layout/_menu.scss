@@ -154,3 +154,8 @@
     max-height: 0 !important;
     transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
 }
+
+.fc-event, .event-title {
+    padding: 0 1px;
+    white-space: nowrap;
+}
