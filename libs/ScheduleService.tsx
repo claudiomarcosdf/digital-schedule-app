@@ -1,4 +1,4 @@
-import { Schedule } from '../types/schedule';
+import { Schedule, ScheduleRequest } from '../types/schedule';
 
 async function getSchedulesByProfessional(professionalTypeId: number, professionalId: number, startDate: string, endDate: string) {
     const response = await fetch(`/api/schedules?professionalTypeId=${professionalTypeId}&professionalId=${professionalId}&startDate=${startDate}&endDate=${endDate}`);
@@ -9,7 +9,12 @@ async function getSchedulesByProfessional(professionalTypeId: number, profession
     return await response.json();
 }
 
-async function createSchedule(schedule: Schedule) {
+async function getMessageError(response: Response, messageDefault: string) {
+    const objError = await response.json();
+    return objError?.message || messageDefault;
+}
+
+async function createSchedule(schedule: ScheduleRequest) {
     const response = await fetch('/api/schedules', {
         method: 'POST',
         headers: {
@@ -18,12 +23,12 @@ async function createSchedule(schedule: Schedule) {
         body: JSON.stringify(schedule)
     });
 
-    const error = response.status != 201 ? 'Erro ao incluir agendamento' : false;
+    const error = response.status != 201 ? await getMessageError(response, 'Erro ao incluir agendamento') : false;
     const data = error ? null : await response.json();
     return { error, data };
 }
 
-async function updateSchedule(schedule: Schedule) {
+async function updateSchedule(schedule: ScheduleRequest) {
     const response = await fetch('/api/schedules', {
         method: 'PUT',
         headers: {
@@ -32,7 +37,7 @@ async function updateSchedule(schedule: Schedule) {
         body: JSON.stringify(schedule)
     });
 
-    const error = !response.ok ? 'Erro ao atualizar agendamento' : false;
+    const error = !response.ok ? await getMessageError(response, 'Erro ao atualizar agendamento') : false;
     const data = error ? null : await response.json();
     return { error, data };
 }

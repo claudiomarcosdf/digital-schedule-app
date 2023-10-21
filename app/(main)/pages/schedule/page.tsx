@@ -17,7 +17,7 @@ import { Professional } from '../../../../types/professional';
 import { useProfessionalTypeStore } from '../../../../store/ProfessionalTypeStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
-import { getFormatedDate } from '../../../../helpers/utils';
+import { getFormatedDate, getFormatedDateByType } from '../../../../helpers/utils';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { BlockUI } from 'primereact/blockui';
 import ScheduleFormDialog from './ScheduleFormDialog';
@@ -96,6 +96,7 @@ const SchedulePage = () => {
             if (professionalType) newSchedule.professionalType = professionalType;
             newSchedule.professional = professional;
             newSchedule.procedure = null;
+            newSchedule.patient = null;
             setSchedule({ ...newSchedule });
 
             setOpenDialog(true);
@@ -113,6 +114,7 @@ const SchedulePage = () => {
     };
 
     const hideDialog = () => {
+        updateMonthlySchedule(professional);
         setOpenDialog(false);
     };
 
@@ -145,14 +147,18 @@ const SchedulePage = () => {
         );
     }
 
-    const handleDropdown = (professional: Professional | null) => {
-        setProfessional(professional);
+    const updateMonthlySchedule = (professional: Professional | null) => {
         const professionalTypeId: number = professionalType?.id || 0;
         const professionalId: number = professional?.id || 0;
-        const startDate = getFormatedDate(new Date().toISOString());
-        const endDate = getFormatedDate(new Date().toISOString());
+        const currentStartDate = getFormatedDateByType(new Date().toISOString(), 'start');
+        const currentEndDate = getFormatedDateByType(new Date().toISOString(), 'end');
 
-        getSchedulesByProfessional(professionalTypeId, professionalId, startDate, endDate);
+        getSchedulesByProfessional(professionalTypeId, professionalId, currentStartDate, currentEndDate);
+    };
+
+    const handleDropdown = (professional: Professional | null) => {
+        setProfessional(professional);
+        updateMonthlySchedule(professional);
     };
 
     return (
@@ -222,7 +228,7 @@ const SchedulePage = () => {
                                     eventTimeFormat={eventTimeFormat}
                                     //dateClick={handleDateClick}
                                     nowIndicator={true}
-                                    initialEvents={INITIAL_EVENTS}
+                                    //initialEvents={INITIAL_EVENTS}
                                     eventClick={handleEventClick}
                                     eventContent={renderEventContent}
                                     select={handleDateSelect}

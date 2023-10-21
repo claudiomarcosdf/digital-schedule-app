@@ -89,7 +89,6 @@ export const usePatientStore = create<PatientStoreProps>((set) => ({
     error && toast.error(error as string, { className: 'toast-message-error' });
 
     const patientsResponse: Patient[] = data;
-    console.log(patientsResponse)
     set((state) => ({...state, patients: patientsResponse}));
   },
   getAllPatient: async () => {

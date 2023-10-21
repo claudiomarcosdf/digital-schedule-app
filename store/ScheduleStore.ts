@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { toast } from 'react-toastify';
 
-import { PatientSchedule, Schedule } from "../types/schedule";
+import { PatientSchedule, Schedule, ScheduleRequest } from "../types/schedule";
 import { initialProfessional, initialProfessionalType } from "./ProfessionalStore";
 import { initialProcedure } from "./ProcedureStore";
 import { createSchedule, deleteSchedule, getSchedulesByProfessional, updateSchedule } from "../libs/ScheduleService";
@@ -74,13 +74,31 @@ const convertToScheduleEvents = (schedules: Schedule[]): ScheduleEvent[] => {
    return scheduleEvents;
 }
 
+const convertToScheduleRequest = (schedule: Schedule) : ScheduleRequest => {
+  const scheduleRequest: ScheduleRequest = {
+    id: schedule?.id,
+    startDate: schedule.startDate,
+    endDate: schedule.endDate,
+    description: schedule.description,
+    amountPaid: schedule.amountPaid || 0.0,
+    professionalTypeId: schedule.professionalType.id || null,
+    professionalId: schedule.professional.id as number,
+    patientId: schedule.patient?.id as number,
+    procedureId: schedule.procedure?.id as number,
+    status: schedule.status || ('AGENDADO' as string)
+  };  
+
+  return scheduleRequest
+}
 
 export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
   schedule: initialSchedule,
   schedules: [],
   setSchedule: (schedule) => set((state) => ({ ...state, schedule })),
   createSchedule: async (schedule) => {
-    const { data, error } = await createSchedule(schedule);
+    const scheduleRequest = convertToScheduleRequest(schedule);
+
+    const { data, error } = await createSchedule(scheduleRequest);
     error && toast.error(error as string, { className: 'toast-message-error' });
 
     if (data) {
@@ -93,7 +111,8 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
     }
   },
   updateSchedule: async (schedule) => {
-    const { data, error } = await updateSchedule(schedule);
+    const scheduleRequest = convertToScheduleRequest(schedule);
+    const { data, error } = await updateSchedule(scheduleRequest);
     error && toast.error(error as string, { className: 'toast-message-error' });
 
     if (data) {

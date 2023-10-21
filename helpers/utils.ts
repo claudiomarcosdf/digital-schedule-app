@@ -64,6 +64,17 @@ function getFormatedDateTime(dateTime: string) {
     return moment(year+"-"+month+"-"+day+'T'+hours+":"+minuts).format("YYYY-MM-DDTHH:mm");
 }
 
+function getFormatedDateByType(date: string, type: string) {
+    let day;
+    const month = moment(date).format('MM');
+    const year = moment(date).format('YYYY');
+
+   if (type == 'start') day = '01'
+   else day = moment(date).endOf('month').format('DD');
+
+   return moment(year+"-"+month+"-"+day).format("YYYY-MM-DD");
+}
+
 function addMinutes(dateTime: Date, minutes: number) {
     return moment(dateTime).add(minutes, 'm').toDate();
 }
@@ -83,6 +94,7 @@ function capitalizeFullName(value: string) {
 }
 
 function capitalizeShortName(value: string) {
+    if (!value) return value;
     var splitStr = value.toLowerCase().split(' ');
     splitStr[0] = splitStr[0].charAt(0).toUpperCase() + splitStr[0].substring(1);
     const ultimaPosicao = splitStr.length-1;
@@ -345,4 +357,4 @@ function getColorStatus(status: string) {
     }
 }
 
-export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
+export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, getFormatedDateByType, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };

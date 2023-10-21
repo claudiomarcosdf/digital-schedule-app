@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AutoComplete, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
+import { AutoComplete, AutoCompleteChangeEvent, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
 import { Demo } from '../../../../types/demo';
 import { Button } from 'primereact/button';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
@@ -7,7 +7,7 @@ import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
 import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
-import { Schedule } from '../../../../types/schedule';
+import { PatientSchedule, Schedule, ScheduleRequest } from '../../../../types/schedule';
 import { useProcedureStore } from '../../../../store/ProcedureStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import { addMinutes, getFormatedDateTime } from '../../../../helpers/utils';
@@ -37,7 +37,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
     const [schedule, setSchedule] = useState<Schedule | null>(initialSchedule);
     const [submitted, setSubmitted] = useState(false);
     //const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
-    const [value2, setValue2] = useState(null);
+    const [patientSearch, setPatientSearch] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState<Status | null>({ name: 'AGENDADO', color: '#009EFA' });
     const statusList: Status[] = [
         { name: 'AGENDADO', color: '#009EFA' },
@@ -47,7 +47,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
         { name: 'CANCELADO', color: '#FF8066' }
     ];
 
-    const scheduleStore = useScheduleStore((state) => state.schedule);
+    const { schedule: scheduleStore, createSchedule, updateSchedule } = useScheduleStore((state) => state);
     const professional = useProfessionalStore((state) => state.professional);
     const getActiveProceduresByProfessionalType = useProcedureStore((state) => state.getActiveProceduresByProfessionalType);
     const procedures = useProcedureStore((state) => state.procedures);
@@ -82,6 +82,26 @@ const ScheduleForm = ({ hideDialog }: any) => {
         }
     };
 
+    const onInputPatientName = (e: AutoCompleteChangeEvent) => {
+        const value = e.value || null;
+
+        if (value?.id) {
+            const patient: Patient = e.value;
+            const patientSchedule: PatientSchedule = {
+                id: patient?.id as number,
+                fullName: patient.person.fullName as string,
+                birthDay: patient.person.birthDay,
+                gender: patient.person.gender,
+                cpf: patient.person.cpf,
+                phone: patient.person.phone,
+                phone2: patient.person.phone2
+            };
+            // @ts-ignore comment
+            setSchedule({ ...schedule, patient: patientSchedule });
+            setPatientSearch(value);
+        } else setPatientSearch(value);
+    };
+
     const onSelectProcedure = (e: DropdownChangeEvent, name: string) => {
         const procedure: Procedure = e.value || null;
 
@@ -93,6 +113,12 @@ const ScheduleForm = ({ hideDialog }: any) => {
             // @ts-ignore comment
             setSchedule({ ...schedule, [name]: procedure });
         }
+    };
+
+    const onInputText = (e: React.ChangeEvent<HTMLInputElement>, name: string) => {
+        const val = e.target.value || '';
+        // @ts-ignore comment
+        setSchedule({ ...schedule, [name]: val });
     };
 
     const onHideDialog = () => {
@@ -127,14 +153,14 @@ const ScheduleForm = ({ hideDialog }: any) => {
     function saveSchedule() {
         setSubmitted(true);
 
-        if (schedule?.patient.id && schedule.startDate && schedule.endDate) {
+        if (schedule?.patient?.id && schedule.startDate && schedule.endDate) {
             const startDate = schedule.startDate ? getFormatedDateTime(new Date(schedule.startDate.toString()).toString()) : '';
             const endDate = schedule.endDate ? getFormatedDateTime(new Date(schedule.endDate.toString()).toString()) : '';
 
             if (schedule?.id) {
-                //updateSchedule({ ...schedule, startDate, endDate});
+                updateSchedule({ ...schedule, startDate, endDate });
             } else {
-                //createSchedule({ ...schedule, startDate, endDate});
+                createSchedule({ ...schedule, startDate, endDate });
             }
             hideDialog();
         }
@@ -146,7 +172,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
             <div className="formgrid grid mt-4">
                 <div className="field col">
                     <span className="p-float-label">
-                        <AutoComplete id="autocomplete" value={value2} onChange={(e) => setValue2(e.value)} suggestions={patients} completeMethod={searchPatient} field="person.fullName" />
+                        <AutoComplete id="autocomplete" value={patientSearch} onChange={(e) => onInputPatientName(e)} suggestions={patients} completeMethod={searchPatient} field="person.fullName" />
                         <label htmlFor="autocomplete">Buscar paciente...</label>
                     </span>
                     {/* {submitted && !schedule?.nickName && <small className="p-invalid">O nome é obrigatório.</small>} */}
@@ -186,11 +212,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
             <div className="formgrid grid mt-5">
                 <div className="field col">
                     <span className="p-float-label">
-                        <InputText
-                            id="description"
-                            // value={professional?.nickName}
-                            // onChange={(e) => onInputChange(e, 'nickName')}
-                        />
+                        <InputText id="description" value={schedule?.description} onChange={(e) => onInputText(e, 'description')} />
                         <label htmlFor="description">Descrição</label>
                     </span>
                 </div>
