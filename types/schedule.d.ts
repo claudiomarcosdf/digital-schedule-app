@@ -46,7 +46,7 @@ export interface ScheduleRequest {
   amountPaid?: number | 0.00;
   professionalTypeId?: number | null;
   professionalId: number;
-  patientId: number;
-  procedureId: number;
+  patientId: number | null;
+  procedureId: number | null;
   status?: string | null;
 }

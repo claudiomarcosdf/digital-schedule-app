@@ -14,6 +14,7 @@ type ProfessionalStoreProps = {
   removeProfessional: (professional: Professional) => void;
   getAllProfessional: () => void;
   getProfessionalsByType: (professionalTypeId: number) => void;
+  reset: () => void;
 }
 
 const initialPersonType: PersonType = {
@@ -136,5 +137,8 @@ export const useProfessionalStore = create<ProfessionalStoreProps>((set) => ({
   getProfessionalsByType: async (professionalTypeId: number) => {
     const professionals: Professional[] = await getProfessionalsByType(professionalTypeId);
     set((state) => ({...state, professionals}))
+  },
+  reset: () => {
+    set((state) => ({...state, professional: initialProfessional, professionals: []}))
   }
 }));

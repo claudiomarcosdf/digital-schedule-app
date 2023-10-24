@@ -23,6 +23,7 @@ type ScheduleStoreProps = {
   updateSchedule: (schedule: Schedule) => void;
   removeSchedule: (schedule: Schedule) => void;
   getSchedulesByProfessional: (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => void;
+  reset: () => void;
 }
 
 const initialPatientSchedule: PatientSchedule = {
@@ -58,7 +59,7 @@ const convertToScheduleEvent = (schedule: Schedule) : ScheduleEvent => {
   // @ts-ignore comment
    return {
       id: schedule.id?.toString() || '',
-      title: "\u2013" + capitalizeShortName(schedule.patient.fullName),
+      title: schedule?.patient ? "\u2013" + capitalizeShortName(schedule?.patient?.fullName || '') : "\u2013" + schedule.description,
       start: schedule.startDate,
       end: schedule.endDate,
       backgroundColor: getColorStatus(schedule.status || '')
@@ -134,5 +135,8 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
 
     // @ts-ignore comment
     set((state) => ({...state, schedules}));
+  },
+  reset: () => {
+    set((state) => ({...state, schedule: initialSchedule, schedules: []}));    
   }
 }))

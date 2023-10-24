@@ -10,7 +10,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 //import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
 import brLocale from '@fullcalendar/core/locales/pt-br';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
 import { Dropdown } from 'primereact/dropdown';
 import ScheduleTypes from './ScheduleTypes';
 import { Professional } from '../../../../types/professional';
@@ -22,6 +21,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { BlockUI } from 'primereact/blockui';
 import ScheduleFormDialog from './ScheduleFormDialog';
 import { Schedule } from '../../../../types/schedule';
+import { Fieldset } from 'primereact/fieldset';
 
 const comboProfessionalStyle = { minWidth: '250px', borderRadius: '8px', fontWeight: 'bolder' };
 
@@ -41,7 +41,6 @@ type stateType = {
 const SchedulePage = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(false);
-    //const [professional, setProfessional] = useState<Professional | null>(null);
     const [state, setState] = useState<stateType>({
         weekendsVisible: true,
         currentEvents: []
@@ -101,16 +100,6 @@ const SchedulePage = () => {
 
             setOpenDialog(true);
         }
-
-        // if (title) {
-        //     calendarApi.addEvent({
-        //         id: createEventId(),
-        //         title,
-        //         start: selectInfo.startStr,
-        //         end: selectInfo.endStr,
-        //         allDay: selectInfo.allDay
-        //     });
-        // }
     };
 
     const hideDialog = () => {
@@ -203,27 +192,6 @@ const SchedulePage = () => {
                                         }
                                     }}
                                     navLinks={true}
-                                    // customButtons={{
-                                    //     prev: {
-                                    //         text: 'Prev',
-                                    //         click: function (date) {
-                                    //             // so something before
-                                    //             console.log(date);
-                                    //             alert('PREV button is going to be executed ' + date);
-                                    //             // do the original command
-                                    //             //calendar.prev();
-                                    //         }
-                                    //     },
-                                    //     next: {
-                                    //         text: 'Next',
-                                    //         click: function (date) {
-                                    //             // so something before
-                                    //             alert('NEXT button is going to be executed ' + date);
-                                    //             // do the original command
-                                    //             //calendar.next();
-                                    //         }
-                                    //     }
-                                    // }}
                                     datesSet={handleNavigationClick}
                                     eventTimeFormat={eventTimeFormat}
                                     //dateClick={handleDateClick}
@@ -246,6 +214,13 @@ const SchedulePage = () => {
                         */
                                 />
                             </BlockUI>
+                            <Fieldset legend="Legenda" style={{ marginTop: '.5rem', fontSize: '10px' }}>
+                                <span className="status-badge status-agendado">Agendado</span>
+                                <span className="status-badge status-confirmado">Confirmado</span>
+                                <span className="status-badge status-presente">Presente</span>
+                                <span className="status-badge status-finalizado">Finalizado</span>
+                                <span className="status-badge status-cancelado">Cancelado</span>
+                            </Fieldset>
                         </div>
                     </div>
                     <ScheduleFormDialog title={professional?.nickName} visible={openDialog} hideDialog={hideDialog} />

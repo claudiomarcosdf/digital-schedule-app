@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { AutoComplete, AutoCompleteChangeEvent, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
-import { Demo } from '../../../../types/demo';
 import { Button } from 'primereact/button';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
@@ -14,24 +13,12 @@ import { addMinutes, getFormatedDateTime } from '../../../../helpers/utils';
 import { Procedure } from '../../../../types/procedure';
 import { usePatientStore } from '../../../../store/PatientStore';
 import { Patient } from '../../../../types/patient';
+import { classNames } from 'primereact/utils';
 
 interface Status {
     name: string;
     color: string;
 }
-
-// interface ScheduleProps {
-//     id?: number | null;
-//     startDate: Nullable<Date>;
-//     endDate: Nullable<Date>;
-//     description: string;
-//     amountPaid?: number | 0.0;
-//     professionalType: ProfessionalType;
-//     professional: ProfessionalSchedule;
-//     patient: PatientSchedule;
-//     procedure: Procedure;
-//     status?: string | null;
-// }
 
 const ScheduleForm = ({ hideDialog }: any) => {
     const [schedule, setSchedule] = useState<Schedule | null>(initialSchedule);
@@ -41,7 +28,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
     const [selectedStatus, setSelectedStatus] = useState<Status | null>({ name: 'AGENDADO', color: '#009EFA' });
     const statusList: Status[] = [
         { name: 'AGENDADO', color: '#009EFA' },
-        { name: 'CONFIRMADO', color: '#F9F871' },
+        { name: 'CONFIRMADO', color: '#f1c40f' },
         { name: 'PRESENTE', color: '#00C9A7' },
         { name: 'FINALIZADO', color: '#DCB0FF' },
         { name: 'CANCELADO', color: '#FF8066' }
@@ -166,16 +153,26 @@ const ScheduleForm = ({ hideDialog }: any) => {
         }
     }
 
-    console.log(schedule);
+    console.log('Schedule: ', schedule);
     return (
         <>
             <div className="formgrid grid mt-4">
                 <div className="field col">
                     <span className="p-float-label">
-                        <AutoComplete id="autocomplete" value={patientSearch} onChange={(e) => onInputPatientName(e)} suggestions={patients} completeMethod={searchPatient} field="person.fullName" />
+                        <AutoComplete
+                            id="autocomplete"
+                            value={patientSearch}
+                            onChange={(e) => onInputPatientName(e)}
+                            suggestions={patients}
+                            completeMethod={searchPatient}
+                            field="person.fullName"
+                            className={classNames({
+                                'p-invalid': submitted && !schedule?.patient?.id
+                            })}
+                        />
                         <label htmlFor="autocomplete">Buscar paciente...</label>
                     </span>
-                    {/* {submitted && !schedule?.nickName && <small className="p-invalid">O nome é obrigatório.</small>} */}
+                    {submitted && !schedule?.patient?.id && <small className="p-invalid">O paciente é obrigatório.</small>}
                 </div>
             </div>
 
@@ -221,9 +218,21 @@ const ScheduleForm = ({ hideDialog }: any) => {
             <div className="formgrid grid mt-5">
                 <div className="field col-6">
                     <span className="p-float-label">
-                        <Dropdown id="procedure" value={schedule?.procedure} onChange={(e) => onSelectProcedure(e, 'procedure')} options={procedures} optionLabel="name" editable placeholder="Selecione um procedimento" />
+                        <Dropdown
+                            id="procedure"
+                            value={schedule?.procedure}
+                            onChange={(e) => onSelectProcedure(e, 'procedure')}
+                            options={procedures}
+                            optionLabel="name"
+                            editable
+                            placeholder="Selecione um procedimento"
+                            className={classNames({
+                                'p-invalid': submitted && !schedule?.procedure?.id
+                            })}
+                        />
                         <label htmlFor="procedure">Procedimento</label>
                     </span>
+                    {submitted && !schedule?.procedure?.id && <small className="p-invalid">O procedimento é obrigatório.</small>}
                 </div>
                 <div className="field col-6">
                     <span className="p-float-label">

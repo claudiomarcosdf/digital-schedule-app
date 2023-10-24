@@ -135,6 +135,46 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
     right: 0;
 }
 
+.legend {
+    margin-top: 3px;
+    padding: 8px;
+    border: solid 0.2px #dee2e6;
+}
 
+.status-badge,
+.order-status-badge {
+    border-radius: var(--border-radius);
+    padding: .25em .5rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: .3px;
+    margin-right: 1rem;
+}
 
+.status-badge {
+    &.status-agendado {
+        background: #009EFA;
+        color: #ffff;
+    }
 
+    &.status-confirmado {
+        background: #f1c40f;
+        color: #2f3640;
+    }
+
+    &.status-presente {
+        background: #00C9A7;
+        color: #ffff;
+    }
+
+    &.status-finalizado {
+        background: #DCB0FF;
+        color: #2f3640;
+    }   
+    
+    &.status-cancelado {
+        background: #FF8066;
+        color: #ffff;
+    }     
+}

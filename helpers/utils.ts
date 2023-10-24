@@ -340,12 +340,11 @@ function convertToProfessionalSchedule(professionalScheduleForm: ProfessionalSch
 }
 
 function getColorStatus(status: string) {
-
-    switch (status.toUpperCase as any) {
+    switch (status.toUpperCase() as any) {
         case "AGENDADO":
-            return '#009EFA'
+            return '#009EFA';
         case "CONFIRMADO":
-            return '#F9F871'
+            return '#f1c40f'
         case "PRESENTE":
             return '#00C9A7'
         case "FINALIZADO":

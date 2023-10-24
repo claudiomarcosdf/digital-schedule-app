@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { TabPanel, TabView } from 'primereact/tabview';
 import ScheduleForm from './ScheduleForm';
+import EventForm from './EventForm';
 
 const ScheduleFormDialog = ({ title, visible, hideDialog }: any) => {
     return (
@@ -12,7 +13,7 @@ const ScheduleFormDialog = ({ title, visible, hideDialog }: any) => {
                         <ScheduleForm hideDialog={hideDialog} />
                     </TabPanel>
                     <TabPanel header="Evento">
-                        <span>Events</span>
+                        <EventForm hideDialog={hideDialog} />
                     </TabPanel>
                 </TabView>
             </Dialog>
