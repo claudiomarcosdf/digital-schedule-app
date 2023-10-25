@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
-import { Dropdown } from 'primereact/dropdown';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { classNames } from 'primereact/utils';
 import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import { Schedule } from '../../../../types/schedule';
-import { addMinutes, getFormatedDateTime } from '../../../../helpers/utils';
+import { addMinutes, getColorStatus, getFormatedDateTime } from '../../../../helpers/utils';
 
 interface Status {
     name: string;
@@ -17,7 +17,6 @@ interface Status {
 const EventForm = ({ hideDialog }: any) => {
     const [schedule, setSchedule] = useState<Schedule | null>(initialSchedule);
     const [submitted, setSubmitted] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState<Status | null>({ name: 'AGENDADO', color: '#009EFA' });
     const statusList: Status[] = [
         { name: 'AGENDADO', color: '#009EFA' },
         { name: 'CONFIRMADO', color: '#F9F871' },
@@ -50,6 +49,13 @@ const EventForm = ({ hideDialog }: any) => {
         const val = e.target.value || '';
         // @ts-ignore comment
         setSchedule({ ...schedule, [name]: val });
+    };
+
+    const onSelectStatus = (e: DropdownChangeEvent) => {
+        const status = e || null;
+
+        // @ts-ignore comment
+        setSchedule({ ...schedule, status: status.name });
     };
 
     const onHideDialog = () => {
@@ -105,13 +111,13 @@ const EventForm = ({ hideDialog }: any) => {
                     <span className="p-float-label">
                         <Dropdown
                             id="status"
-                            value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.value)}
+                            value={schedule?.status || 'AGENDADO'}
+                            onChange={(e) => onSelectStatus(e.value)}
                             options={statusList}
                             optionLabel="name"
                             editable
                             placeholder="Selecione um status"
-                            style={{ backgroundColor: `${selectedStatus?.color}` }}
+                            style={{ backgroundColor: `${getColorStatus(schedule?.status as string)}` }}
                         />
                         <label htmlFor="status">Status</label>
                     </span>

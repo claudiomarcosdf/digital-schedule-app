@@ -9,7 +9,7 @@ import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleSto
 import { PatientSchedule, Schedule, ScheduleRequest } from '../../../../types/schedule';
 import { useProcedureStore } from '../../../../store/ProcedureStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
-import { addMinutes, getFormatedDateTime } from '../../../../helpers/utils';
+import { addMinutes, getColorStatus, getFormatedDateTime } from '../../../../helpers/utils';
 import { Procedure } from '../../../../types/procedure';
 import { usePatientStore } from '../../../../store/PatientStore';
 import { Patient } from '../../../../types/patient';
@@ -25,7 +25,6 @@ const ScheduleForm = ({ hideDialog }: any) => {
     const [submitted, setSubmitted] = useState(false);
     //const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
     const [patientSearch, setPatientSearch] = useState(null);
-    const [selectedStatus, setSelectedStatus] = useState<Status | null>({ name: 'AGENDADO', color: '#009EFA' });
     const statusList: Status[] = [
         { name: 'AGENDADO', color: '#009EFA' },
         { name: 'CONFIRMADO', color: '#f1c40f' },
@@ -45,6 +44,11 @@ const ScheduleForm = ({ hideDialog }: any) => {
         const professionalTypeId: number = professional?.professionalType.id || 0;
         if (procedures.length == 0 || procedures[0].professionalType.id != professionalTypeId) {
             getActiveProceduresByProfessionalType(professionalTypeId);
+        }
+
+        if (scheduleStore?.patient?.id) {
+            // @ts-ignore comment
+            setPatientSearch(scheduleStore.patient.fullName);
         }
 
         setSchedule(scheduleStore || initialSchedule);
@@ -106,6 +110,13 @@ const ScheduleForm = ({ hideDialog }: any) => {
         const val = e.target.value || '';
         // @ts-ignore comment
         setSchedule({ ...schedule, [name]: val });
+    };
+
+    const onSelectStatus = (e: DropdownChangeEvent) => {
+        const status = e || null;
+
+        // @ts-ignore comment
+        setSchedule({ ...schedule, status: status.name });
     };
 
     const onHideDialog = () => {
@@ -193,13 +204,13 @@ const ScheduleForm = ({ hideDialog }: any) => {
                     <span className="p-float-label">
                         <Dropdown
                             id="status"
-                            value={selectedStatus}
-                            onChange={(e) => setSelectedStatus(e.value)}
+                            value={schedule?.status || 'AGENDADO'}
+                            onChange={(e) => onSelectStatus(e.value)}
                             options={statusList}
                             optionLabel="name"
                             editable
                             placeholder="Selecione um status"
-                            style={{ backgroundColor: `${selectedStatus?.color}` }}
+                            style={{ backgroundColor: `${getColorStatus(schedule?.status as string)}` }}
                         />
                         <label htmlFor="status">Status</label>
                     </span>
@@ -220,7 +231,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
                     <span className="p-float-label">
                         <Dropdown
                             id="procedure"
-                            value={schedule?.procedure}
+                            value={schedule?.procedure?.name}
                             onChange={(e) => onSelectProcedure(e, 'procedure')}
                             options={procedures}
                             optionLabel="name"

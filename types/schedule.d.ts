@@ -1,5 +1,6 @@
+import { Patient } from "./patient";
 import { Procedure } from "./procedure";
-import { ProfessionalType } from "./professional";
+import { Professional, ProfessionalType } from "./professional";
 
 type Gender = 'MASCULINO' | 'FEMININO';
 
@@ -23,6 +24,7 @@ export interface ProfessionalSchedule {
   phone2?: string;
 }
 
+//To Schedule list
 export interface Schedule {
   id?: number | null;
   startDate: string;
@@ -49,4 +51,19 @@ export interface ScheduleRequest {
   patientId: number | null;
   procedureId: number | null;
   status?: string | null;
+}
+
+export interface ScheduleCreateUpdateResponse {
+  id?: number | null;
+  startDate: string;
+  endDate: string;
+  description: string;
+  amountPaid?: number | 0.00;
+  professionalType: ProfessionalType;
+  professional: Professional;
+  patient?: Patient | null;
+  procedure?: Procedure | null;
+  status?: string | null;
+  active?: boolean | null;
+  createdDate?: string | null;
 }

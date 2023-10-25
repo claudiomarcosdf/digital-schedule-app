@@ -31,15 +31,13 @@ const eventTimeFormat: FormatterInput = {
     omitZeroMinute: false
 };
 
-const events = [{ title: '\u2013 Fulano de Tals ', start: '2023-10-16T18:00:00', backgroundColor: '#926D00', borderColor: '#926D00' }];
-
 type stateType = {
     weekendsVisible: boolean;
     currentEvents: EventApi[];
 };
 
 const SchedulePage = () => {
-    const [openDialog, setOpenDialog] = useState(false);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
     const [state, setState] = useState<stateType>({
         weekendsVisible: true,
@@ -54,6 +52,7 @@ const SchedulePage = () => {
     const getSchedulesByProfessional = useScheduleStore((state) => state.getSchedulesByProfessional);
     const schedules = useScheduleStore((state) => state.schedules);
     const setSchedule = useScheduleStore((state) => state.setSchedule);
+    const getSchedule = useScheduleStore((state) => state.getSchedule);
 
     useEffect(() => {
         getProfessionalsByType(professionalType?.id || 0);
@@ -108,9 +107,16 @@ const SchedulePage = () => {
     };
 
     const handleEventClick = (clickInfo: EventClickArg) => {
-        if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-            clickInfo.event.remove();
+        const IdEvent = clickInfo.event.id || null;
+
+        if (IdEvent) {
+            getSchedule(parseInt(IdEvent));
+            setOpenDialog(true);
         }
+
+        // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+        //     clickInfo.event.remove();
+        // }
     };
 
     const handleEvents = (events: EventApi[]) => {
