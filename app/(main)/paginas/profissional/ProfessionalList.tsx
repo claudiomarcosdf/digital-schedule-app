@@ -160,7 +160,7 @@ const ProfessionalList = () => {
                     <h5>Profissionais</h5>
                     <div className="flex justify-content-between mb-2">
                         <p>Lista de profissionais cadastrados.</p>
-                        <Button label="Novo Paciente" icon="pi pi-plus" onClick={newProfessionalClick} />
+                        <Button label="Novo Profissional" icon="pi pi-plus" onClick={newProfessionalClick} />
                     </div>
 
                     <DataTable

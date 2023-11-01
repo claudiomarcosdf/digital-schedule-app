@@ -11,6 +11,9 @@ async function getSchedulesByProfessional(professionalTypeId: number, profession
 
 async function getMessageError(response: Response, messageDefault: string) {
     const objError = await response.json();
+
+    if (response.status == 409) return 'Já existe agendamento para este horário!';
+
     return objError?.message || messageDefault;
 }
 

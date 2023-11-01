@@ -17,22 +17,22 @@ const AppMenu = () => {
         },
         {
             label: 'Agendamento',
-            items: [{ label: 'Agenda', icon: 'pi pi-fw pi-calendar', to: '/pages/schedule' }]
+            items: [{ label: 'Agenda', icon: 'pi pi-fw pi-calendar', to: '/paginas/agenda' }]
         },
         {
             label: 'Cadastro',
             items: [
-                { label: 'Profissional', icon: 'pi pi-fw pi-eye', to: '/pages/professional' },
-                { label: 'Paciente', icon: 'pi pi-fw pi-id-card', to: '/pages/patient' },
-                { label: 'Procedimento', icon: 'pi pi-fw pi-list', to: '/pages/procedure' }
+                { label: 'Profissional', icon: 'pi pi-fw pi-eye', to: '/paginas/profissional' },
+                { label: 'Paciente', icon: 'pi pi-fw pi-id-card', to: '/paginas/paciente' },
+                { label: 'Procedimento', icon: 'pi pi-fw pi-list', to: '/paginas/procedimento' }
             ]
         },
         {
             label: 'Relatório',
             items: [
-                { label: 'Agendamento', icon: 'pi pi-fw pi-file', to: '/' },
-                { label: 'Profissional', icon: 'pi pi-fw pi-file', to: '/' },
-                { label: 'Paciente', icon: 'pi pi-fw pi-file', to: '/' }
+                { label: 'Agendamento', icon: 'pi pi-fw pi-file', to: '/relatorios/agendamento' },
+                { label: 'Profissional', icon: 'pi pi-fw pi-file', to: '/relatorios/profissional' },
+                { label: 'Paciente', icon: 'pi pi-fw pi-file', to: '/relatorios/paciente' }
             ]
         },
         {
@@ -133,61 +133,12 @@ const AppMenu = () => {
             ]
         },
         {
-            label: 'Hierarchy',
+            label: 'Whatsapp',
             items: [
                 {
-                    label: 'Submenu 1',
-                    icon: 'pi pi-fw pi-bookmark',
-                    items: [
-                        {
-                            label: 'Submenu 1.1',
-                            icon: 'pi pi-fw pi-bookmark',
-                            items: [
-                                { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' }
-                            ]
-                        },
-                        {
-                            label: 'Submenu 1.2',
-                            icon: 'pi pi-fw pi-bookmark',
-                            items: [{ label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }]
-                        }
-                    ]
-                },
-                {
-                    label: 'Submenu 2',
-                    icon: 'pi pi-fw pi-bookmark',
-                    items: [
-                        {
-                            label: 'Submenu 2.1',
-                            icon: 'pi pi-fw pi-bookmark',
-                            items: [
-                                { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-                                { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' }
-                            ]
-                        },
-                        {
-                            label: 'Submenu 2.2',
-                            icon: 'pi pi-fw pi-bookmark',
-                            items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            label: 'Get Started',
-            items: [
-                {
-                    label: 'Documentation',
-                    icon: 'pi pi-fw pi-question',
-                    to: '/documentation'
-                },
-                {
-                    label: 'View Source',
-                    icon: 'pi pi-fw pi-search',
-                    url: 'https://github.com/primefaces/sakai-react',
+                    label: 'QR Code',
+                    icon: 'pi pi-fw pi-whatsapp',
+                    url: 'http://localhost:3333/instance/qr?key=190',
                     target: '_blank'
                 }
             ]

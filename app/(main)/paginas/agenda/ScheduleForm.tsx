@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { AutoComplete, AutoCompleteChangeEvent, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
+import { Tooltip } from 'primereact/tooltip';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
+import { classNames } from 'primereact/utils';
 import { InputNumber, InputNumberValueChangeEvent } from 'primereact/inputnumber';
-import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
 import { PatientSchedule, Schedule, ScheduleRequest } from '../../../../types/schedule';
+import { Procedure } from '../../../../types/procedure';
+import { Patient } from '../../../../types/patient';
+import { initialSchedule, useScheduleStore } from '../../../../store/ScheduleStore';
 import { useProcedureStore } from '../../../../store/ProcedureStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
-import { addMinutes, getColorStatus, getFormatedDateTime } from '../../../../helpers/utils';
-import { Procedure } from '../../../../types/procedure';
 import { usePatientStore } from '../../../../store/PatientStore';
-import { Patient } from '../../../../types/patient';
-import { classNames } from 'primereact/utils';
+import { addMinutes, getColorStatus, getFormatedDateTime } from '../../../../helpers/utils';
+import PagientFormDialog from '../paciente/PatientFormDialog';
 
 interface Status {
     name: string;
@@ -24,6 +26,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
     const [schedule, setSchedule] = useState<Schedule | null>(initialSchedule);
     const [submitted, setSubmitted] = useState(false);
     //const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
+    const [openPatientDialog, setOpenPatientDialog] = useState(false);
     const [patientSearch, setPatientSearch] = useState(null);
     const statusList: Status[] = [
         { name: 'AGENDADO', color: '#009EFA' },
@@ -39,6 +42,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
     const procedures = useProcedureStore((state) => state.procedures);
     const searchPatients = usePatientStore((state) => state.findPatientsByName);
     const patients = usePatientStore((state) => state.patients);
+    const setPatient = usePatientStore((state) => state.setPatient);
 
     useEffect(() => {
         const professionalTypeId: number = professional?.professionalType.id || 0;
@@ -124,6 +128,15 @@ const ScheduleForm = ({ hideDialog }: any) => {
         hideDialog();
     };
 
+    const newPacienteClick = () => {
+        setPatient(null);
+        setOpenPatientDialog(true);
+    };
+
+    const hideDialogPatient = () => {
+        setOpenPatientDialog(false);
+    };
+
     const searchPatient = (event: AutoCompleteCompleteEvent) => {
         // in a real application, make a request to a remote url with the query and
         // return filtered results, for demo we filter at client side
@@ -164,7 +177,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
         }
     }
 
-    console.log('Schedule: ', schedule);
+    //console.log('Schedule: ', schedule);
     return (
         <>
             <div className="formgrid grid mt-4">
@@ -184,6 +197,9 @@ const ScheduleForm = ({ hideDialog }: any) => {
                         <label htmlFor="autocomplete">Buscar paciente...</label>
                     </span>
                     {submitted && !schedule?.patient?.id && <small className="p-invalid">O paciente é obrigatório.</small>}
+                </div>
+                <div className="field col-1">
+                    <Button icon="pi pi-plus" rounded onClick={newPacienteClick} tooltip="Novo Paciente" tooltipOptions={{ position: 'top' }} />
                 </div>
             </div>
 
@@ -253,6 +269,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
                 </div>
             </div>
             <div className="flex justify-content-end formgrid grid mt-5">{ButtonsFooter}</div>
+            <PagientFormDialog title={'Cadastrar paciente'} visible={openPatientDialog} hideDialog={hideDialogPatient} />
         </>
     );
 };

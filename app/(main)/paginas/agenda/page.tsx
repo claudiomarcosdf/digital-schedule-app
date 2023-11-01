@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { DateSelectArg, DatesSetArg, EventApi, EventClickArg, FormatterInput, formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
@@ -45,7 +45,6 @@ const SchedulePage = () => {
     });
 
     const professionalType = useProfessionalTypeStore((state) => state.professionalType);
-    const getProfessionalsByType = useProfessionalStore((state) => state.getProfessionalsByType);
     const professionals = useProfessionalStore((state) => state.professionals);
     const setProfessional = useProfessionalStore((state) => state.setProfessional);
     const professional = useProfessionalStore((state) => state.professional);
@@ -53,10 +52,6 @@ const SchedulePage = () => {
     const schedules = useScheduleStore((state) => state.schedules);
     const setSchedule = useScheduleStore((state) => state.setSchedule);
     const getSchedule = useScheduleStore((state) => state.getSchedule);
-
-    useEffect(() => {
-        getProfessionalsByType(professionalType?.id || 0);
-    }, [professionalType]);
 
     const handleDateClick = (arg: any) => {
         alert(arg.dateStr);

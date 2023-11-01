@@ -7,6 +7,7 @@ import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 
 const ScheduleTypes = () => {
     const getProfessionalTypes = useProfessionalTypeStore((state) => state.getAllProfessionalTypes);
+    const getProfessionalsByType = useProfessionalStore((state) => state.getProfessionalsByType);
     const professionalTypes = useProfessionalTypeStore((state) => state.professionalTypes);
     const setProfessionalType = useProfessionalTypeStore((state) => state.setProfessionalType);
     const resetProfessional = useProfessionalStore((state) => state.reset);
@@ -19,6 +20,7 @@ const ScheduleTypes = () => {
     const onSelectProfessionalType = (professionalType: ProfessionalType) => {
         resetProfessional();
         setProfessionalType(professionalType);
+        getProfessionalsByType(professionalType?.id || 0);
         resetSchedule();
     };
 
