@@ -28,7 +28,8 @@ import { PersonType, Person } from './person';
 import { Patient } from './patient';
 import { ProfessionalType, Professional, professionalSchedulePropsForm } from './professional';
 import { Procedure } from './procedure';
-import { Schedule } from './schedule'
+import { Schedule } from './schedule';
+import { InstanceInfo } from './whatsapp';
 
 type ChildContainerProps = {
     children: ReactNode;
@@ -70,5 +71,6 @@ export type {
     Professional,
     Procedure,
     Schedule,
-    professionalSchedulePropsForm
+    professionalSchedulePropsForm,
+    InstanceInfo
 };

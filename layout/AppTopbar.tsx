@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 
+import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import Link from 'next/link';
 import { classNames } from 'primereact/utils';
-import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { AppTopbarRef } from '../types/types';
 import { LayoutContext } from './context/layoutcontext';
+import { useWhatsappStore } from '../store/WhatsappStore';
+import { Tooltip } from 'primereact/tooltip';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
@@ -12,11 +14,19 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const topbarmenuRef = useRef(null);
     const topbarmenubuttonRef = useRef(null);
 
+    const { instanceInfo } = useWhatsappStore((state) => state);
+
     useImperativeHandle(ref, () => ({
         menubutton: menubuttonRef.current,
         topbarmenu: topbarmenuRef.current,
         topbarmenubutton: topbarmenubuttonRef.current
     }));
+
+    const getInstanceInfo = () => {
+        if (instanceInfo && instanceInfo?.error) return '';
+
+        return instanceInfo ? (instanceInfo.user ? instanceInfo.user : instanceInfo.message) : '';
+    };
 
     return (
         <div className="layout-topbar">
@@ -34,20 +44,31 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
             </button>
 
             <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
-                <button type="button" className="p-link layout-topbar-button">
-                    <i className="pi pi-calendar"></i>
-                    <span>Calendar</span>
-                </button>
+                <Link href="/paginas/agenda">
+                    <button type="button" className="p-link layout-topbar-button">
+                        <i className="pi pi-calendar"></i>
+                        <span>Calendar</span>
+                    </button>
+                </Link>
                 <button type="button" className="p-link layout-topbar-button">
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
-                <Link href="/documentation">
+                <Tooltip target=".zap" style={{ width: 'auto' }} position="left">
+                    {getInstanceInfo() || 'Desconectado'}
+                </Tooltip>
+                <Link href="/whatsapp">
+                    <button type="button" className={`zap p-link layout-topbar-button ${getInstanceInfo() && 'text-green-500'}`}>
+                        <i className="pi pi-fw pi-whatsapp"></i>
+                        <span>Whatsapp</span>
+                    </button>
+                </Link>
+                {/* <Link href="/documentation">
                     <button type="button" className="p-link layout-topbar-button">
                         <i className="pi pi-cog"></i>
                         <span>Settings</span>
                     </button>
-                </Link>
+                </Link>                 */}
             </div>
         </div>
     );

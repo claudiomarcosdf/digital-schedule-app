@@ -40,6 +40,21 @@ const AppMenu = () => {
             items: [{ label: 'Usuário', icon: 'pi pi-fw pi-user', to: '/' }]
         },
         {
+            label: 'Whatsapp',
+            items: [
+                {
+                    label: 'QR Code',
+                    icon: 'pi pi-fw pi-whatsapp',
+                    to: '/whatsapp'
+                },
+                {
+                    label: 'Enviar confirmação',
+                    icon: 'pi pi-fw pi-comments',
+                    to: '/whatsapp/confirmacao'
+                }
+            ]
+        },
+        {
             label: 'UI Components',
             items: [
                 { label: 'Form Layout', icon: 'pi pi-fw pi-id-card', to: '/uikit/formlayout' },
@@ -129,17 +144,6 @@ const AppMenu = () => {
                     label: 'Agenda',
                     icon: 'pi pi-fw pi-circle-off',
                     to: '/pages/schedule'
-                }
-            ]
-        },
-        {
-            label: 'Whatsapp',
-            items: [
-                {
-                    label: 'QR Code',
-                    icon: 'pi pi-fw pi-whatsapp',
-                    url: 'http://localhost:3333/instance/qr?key=190',
-                    target: '_blank'
                 }
             ]
         }

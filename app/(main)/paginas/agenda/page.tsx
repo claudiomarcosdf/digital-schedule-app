@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState, useRef, RefObject, MutableRefObject } from 'react';
 
 import { DateSelectArg, DatesSetArg, EventApi, EventClickArg, FormatterInput, formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
@@ -22,6 +22,7 @@ import { BlockUI } from 'primereact/blockui';
 import ScheduleFormDialog from './ScheduleFormDialog';
 import { Schedule } from '../../../../types/schedule';
 import { Fieldset } from 'primereact/fieldset';
+import { LayoutContext } from '../../../../layout/context/layoutcontext';
 
 const comboProfessionalStyle = { minWidth: '250px', borderRadius: '8px', fontWeight: 'bolder' };
 
@@ -37,12 +38,16 @@ type stateType = {
 };
 
 const SchedulePage = () => {
+    const calendar = useRef<FullCalendar>(null);
+    const containerRef = useRef() as MutableRefObject<HTMLDivElement>; //useRef<HTMLDivElement | null>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [loading, setLoading] = useState(false);
     const [state, setState] = useState<stateType>({
         weekendsVisible: true,
         currentEvents: []
     });
+
+    const { layoutState } = useContext(LayoutContext);
 
     const professionalType = useProfessionalTypeStore((state) => state.professionalType);
     const professionals = useProfessionalStore((state) => state.professionals);
@@ -52,6 +57,10 @@ const SchedulePage = () => {
     const schedules = useScheduleStore((state) => state.schedules);
     const setSchedule = useScheduleStore((state) => state.setSchedule);
     const getSchedule = useScheduleStore((state) => state.getSchedule);
+
+    useEffect(() => {
+        handleResize();
+    }, [layoutState.staticMenuDesktopInactive]);
 
     const handleDateClick = (arg: any) => {
         alert(arg.dateStr);
@@ -108,10 +117,6 @@ const SchedulePage = () => {
             getSchedule(parseInt(IdEvent));
             setOpenDialog(true);
         }
-
-        // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        //     clickInfo.event.remove();
-        // }
     };
 
     const handleEvents = (events: EventApi[]) => {
@@ -151,6 +156,15 @@ const SchedulePage = () => {
         updateMonthlySchedule(professional);
     };
 
+    const handleResize = () => {
+        //Atualiza o tamanho do calendário ao esconder/mostrar o menu lateral
+        console.log('resizing...');
+        const calendarApi = calendar.current?.getApi();
+        calendarApi?.updateSize();
+        const resizeObserver = new ResizeObserver(() => calendarApi?.updateSize());
+        resizeObserver.observe(containerRef?.current);
+    };
+
     return (
         <>
             <div className="grid">
@@ -175,45 +189,50 @@ const SchedulePage = () => {
                                 </div>
                             </div>
                             <BlockUI blocked={loading}>
-                                {loading && <ProgressSpinner className="overlay-spinner" />}
-                                <FullCalendar
-                                    height={700}
-                                    locale={brLocale}
-                                    plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
-                                    headerToolbar={{
-                                        left: 'prev,next today',
-                                        center: 'title',
-                                        right: 'dayGridMonth,timeGridWeek,timeGridDay, listDay'
-                                    }}
-                                    views={{
-                                        dayGridMonth: {
-                                            // name of view
-                                            titleFormat: { year: 'numeric', month: 'long' }
-                                            // other view-specific options here
-                                        }
-                                    }}
-                                    navLinks={true}
-                                    datesSet={handleNavigationClick}
-                                    eventTimeFormat={eventTimeFormat}
-                                    //dateClick={handleDateClick}
-                                    nowIndicator={true}
-                                    //initialEvents={INITIAL_EVENTS}
-                                    eventClick={handleEventClick}
-                                    eventContent={renderEventContent}
-                                    select={handleDateSelect}
-                                    editable={false}
-                                    selectable={true}
-                                    selectMirror={true}
-                                    dayMaxEvents={true}
-                                    weekends={state.weekendsVisible}
-                                    events={schedules}
-                                    eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-                                    /* you can update a remote database when these fire:
+                                <div ref={containerRef}>
+                                    {loading && <ProgressSpinner className="overlay-spinner" />}
+                                    <FullCalendar
+                                        ref={calendar}
+                                        height={700}
+                                        eventResizableFromStart={true}
+                                        locale={brLocale}
+                                        plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
+                                        headerToolbar={{
+                                            left: 'prev,next today',
+                                            center: 'title',
+                                            right: 'dayGridMonth,timeGridWeek,timeGridDay, listDay'
+                                        }}
+                                        views={{
+                                            dayGridMonth: {
+                                                // name of view
+                                                titleFormat: { year: 'numeric', month: 'long' }
+                                                // other view-specific options here
+                                            }
+                                        }}
+                                        navLinks={true}
+                                        datesSet={handleNavigationClick}
+                                        eventTimeFormat={eventTimeFormat}
+                                        //dateClick={handleDateClick}
+                                        nowIndicator={true}
+                                        //initialEvents={INITIAL_EVENTS}
+                                        eventClick={handleEventClick}
+                                        eventContent={renderEventContent}
+                                        select={handleDateSelect}
+                                        expandRows={true}
+                                        editable={false}
+                                        selectable={true}
+                                        selectMirror={true}
+                                        dayMaxEvents={true}
+                                        weekends={state.weekendsVisible}
+                                        events={schedules}
+                                        eventsSet={handleEvents} // called after events are initialized/added/changed/removed
+                                        /* you can update a remote database when these fire:
                             eventAdd={function(){}}
                             eventChange={function(){}}
                             eventRemove={function(){}}    
                         */
-                                />
+                                    />
+                                </div>
                             </BlockUI>
                             <Fieldset legend="Legenda" style={{ marginTop: '.5rem', fontSize: '10px' }}>
                                 <span className="status-badge status-agendado">Agendado</span>

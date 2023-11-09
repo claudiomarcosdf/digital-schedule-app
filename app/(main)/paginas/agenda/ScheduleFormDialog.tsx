@@ -22,7 +22,7 @@ const ScheduleFormDialog = ({ title, visible, hideDialog }: any) => {
                     <TabPanel header="Agendamento">
                         <ScheduleForm hideDialog={hideDialog} />
                     </TabPanel>
-                    <TabPanel header="Evento">
+                    <TabPanel header="Bloqueio de horário">
                         <EventForm hideDialog={hideDialog} />
                     </TabPanel>
                 </TabView>

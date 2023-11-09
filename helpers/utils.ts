@@ -2,6 +2,16 @@ import { initialProfessionalScheduleForm } from '../store/ProfessionalStore';
 import { ProfessionalSchedule, ProfessionalSchedulePropsForm } from '../types/professional';
 import moment from 'moment';
 
+function formatDateHourBrazil(date: string) {
+    if (!date) {
+      return;
+    }
+  
+    moment.locale('pt-BR');
+    const dateHour = moment(date).format('DD/MM/YYYY HH:mm');
+    return dateHour;
+  }
+
 function formatCurrency(value: number) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
@@ -356,4 +366,4 @@ function getColorStatus(status: string) {
     }
 }
 
-export { formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, getFormatedDateByType, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
+export { formatDateHourBrazil, formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, getFormatedDateByType, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
