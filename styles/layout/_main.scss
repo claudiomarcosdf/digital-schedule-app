@@ -179,6 +179,14 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
     }     
 }
 
+.message-legend {
+    font-size: small;
+}
+
+.emoji-legend {
+    font-size: medium;
+}
+
 #qrcode-container {
     display: flex;
     flex-direction: column;

@@ -51,6 +51,11 @@ const AppMenu = () => {
                     label: 'Enviar confirmação',
                     icon: 'pi pi-fw pi-comments',
                     to: '/whatsapp/confirmacao'
+                },
+                {
+                    label: 'Mensagens padrão',
+                    icon: 'pi pi-fw pi-align-center',
+                    to: '/whatsapp/mensagempadrao'
                 }
             ]
         },

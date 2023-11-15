@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { PatientSchedule, Schedule, ScheduleCreateUpdateResponse, ScheduleRequest } from "../types/schedule";
 import { initialProfessional, initialProfessionalType } from "./ProfessionalStore";
 import { initialProcedure } from "./ProcedureStore";
-import { createSchedule, deleteSchedule, getSchedulesByProfessional, updateSchedule } from "../libs/ScheduleService";
+import { createSchedule, deleteSchedule, getSchedulesByProfessional, updateSchedule, sendConfirmation } from "../libs/ScheduleService";
 import { capitalizeShortName, getColorStatus } from "../helpers/utils";
 import { ProfessionalType } from "../types/professional";
 
@@ -31,6 +31,7 @@ type ScheduleStoreProps = {
   removeSchedule: (schedule: Schedule) => void;
   getSchedulesByProfessional: (professionalTypeId: number, professionalId: number, startDate: string, endDate: string) => void;
   getSchedule: (id: number) => void;
+  sendConfirmationMessage: (date: string) => void;
   reset: () => void;
 }
 
@@ -214,6 +215,12 @@ export const useScheduleStore = create<ScheduleStoreProps>((set) => ({
   },
   getSchedule: (id: number) => {
     set((state) => ({ ...state, schedule: findScheduleApiById(state.schedulesApi, id) }));
+  },
+  sendConfirmationMessage: async (date: string) => {
+    const { error } = await sendConfirmation(date);
+
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    !error && toast.success('Mensagens enviadas com sucesso!', { className: 'toast-message-success' });
   },
   reset: () => {
     set((state) => ({...state, schedule: initialSchedule, schedules: []}));    

@@ -29,7 +29,7 @@ import { Patient } from './patient';
 import { ProfessionalType, Professional, professionalSchedulePropsForm } from './professional';
 import { Procedure } from './procedure';
 import { Schedule } from './schedule';
-import { InstanceInfo } from './whatsapp';
+import { InstanceInfo, FileMessage } from './whatsapp';
 
 type ChildContainerProps = {
     children: ReactNode;
@@ -72,5 +72,6 @@ export type {
     Procedure,
     Schedule,
     professionalSchedulePropsForm,
-    InstanceInfo
+    InstanceInfo,
+    FileMessage
 };

@@ -10,3 +10,8 @@ export interface QRCode {
   message?: string | null;
   image?: string | null; 
 } 
+
+export interface FileMessage {
+  fileName: string;
+  message: string;
+}

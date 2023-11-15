@@ -57,4 +57,14 @@ async function deleteSchedule(schedule: Schedule) {
     return { error };
 }
 
-export { getSchedulesByProfessional, createSchedule, updateSchedule, deleteSchedule };
+async function sendConfirmation(date: string) {
+    const response = await fetch(`/api/schedules/sendconfirmation?scheduleDate=${date}`, {
+        method: 'POST'
+    });
+
+    const error = !response.ok ? 'A conexão com o whatsapp falhou' : false;
+    const data = error ? null : (await response?.text()).trim();
+    return { error, data };
+}
+
+export { getSchedulesByProfessional, createSchedule, updateSchedule, deleteSchedule, sendConfirmation };

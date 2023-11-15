@@ -1,12 +1,17 @@
 import { create } from "zustand";
-import { InstanceInfo, QRCode } from "../types/whatsapp";
-import { getInstanceInfoApi, getQRCodeApi } from "../libs/WhatsappService";
+import { toast } from 'react-toastify';
+import { FileMessage, InstanceInfo, QRCode } from "../types/whatsapp";
+import { getInstanceInfoApi, getQRCodeApi, getDefaultMessage, saveDefaultMessage } from "../libs/WhatsappService";
 
 type WhatsappStoreProps = {
   instanceInfo: InstanceInfo | null;
   qrCode: QRCode | null;
+  textMessageSchedule: string | '';
+  textMessageConfirmation: string | '';
   getInstanceInfo: () => void;
   getQRCode: () => void;
+  getMessage: (messageType: string) => void;
+  saveMessage: (fileMessage: FileMessage) => void;
 }
 
 const initInstanceInfo = {
@@ -24,6 +29,8 @@ const initQRCode = {
 export const useWhatsappStore = create<WhatsappStoreProps>((set) => ({
   instanceInfo: null,
   qrCode: null,
+  textMessageSchedule: '',
+  textMessageConfirmation: '',
   getInstanceInfo: async () => {
     const { data, error } = await getInstanceInfoApi();
 
@@ -70,5 +77,21 @@ export const useWhatsappStore = create<WhatsappStoreProps>((set) => ({
     }   
 
     set((state) => ({ ...state, qrCode: qrCode }));    
+  },
+  getMessage: async (messageType: string) => {
+    if (!messageType || (messageType != 'schedule' && messageType != 'confirmation')) return;
+
+    const { data, error } = await getDefaultMessage(messageType);
+
+    if (messageType == 'schedule') 
+      set((state) => ({ ...state, textMessageSchedule: data as string }))
+    else if (messageType == 'confirmation')
+     set((state) => ({ ...state, textMessageConfirmation: data as string }))
+  },
+  saveMessage: async (fileMessage: FileMessage) => {
+    const { error } = await saveDefaultMessage(fileMessage);
+
+    error && toast.error(error as string, { className: 'toast-message-error' });
+    !error && toast.success('Mensagem salva com sucesso!', { className: 'toast-message-success' });
   }
 }));
