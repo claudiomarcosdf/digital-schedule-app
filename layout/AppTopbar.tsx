@@ -53,6 +53,11 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
         return instanceInfo ? (instanceInfo.user ? instanceInfo.user : instanceInfo.message) : '';
     };
 
+    const handleMenuClick = (event: any) => {
+        // @ts-ignore comment
+        menuRight?.current?.toggle(event);
+    };
+
     return (
         <div className="layout-topbar">
             <Link href="/" className="layout-topbar-logo">
@@ -77,7 +82,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                 </Link>
 
                 <Menu model={items} popup ref={menuRight} id="popup_menu_right" popupAlignment="right" />
-                <button type="button" className="p-link layout-topbar-button" onClick={(event) => menuRight?.current?.toggle(event)} aria-controls="popup_menu_right" aria-haspopup>
+                <button type="button" className="p-link layout-topbar-button" onClick={(event) => handleMenuClick(event)} aria-controls="popup_menu_right" aria-haspopup>
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
