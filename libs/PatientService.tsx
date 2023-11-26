@@ -1,7 +1,11 @@
 import { Patient } from '../types/patient';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function getPatients() {
-    const response = await fetch('/api/patients');
+    const defaultOptions = await headerAuthorizationToken();
+    const response = await fetch(pathNextToApiDigitalSchedule + '/patients', defaultOptions);
 
     if (!response.ok) {
         throw new Error('Erro ao listar pacientes');
@@ -10,7 +14,8 @@ async function getPatients() {
 }
 
 async function findPatientsByName(name: string) {
-    const response = await fetch('/api/patients/name/' + name);
+    const defaultOptions = await headerAuthorizationToken();
+    const response = await fetch(pathNextToApiDigitalSchedule + '/patients/name/' + name, defaultOptions);
 
     const error = !response.ok ? 'Erro ao buscar paciente' : false;
     const data = error ? null : await response.json();
@@ -23,10 +28,13 @@ async function findPatientsByName(name: string) {
 // },
 
 async function createPatient(patient: Patient) {
-    const response = await fetch('/api/patients', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/patients', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(patient)
     });
@@ -37,10 +45,13 @@ async function createPatient(patient: Patient) {
 }
 
 async function updatePatient(patient: Patient) {
-    const response = await fetch('/api/patients', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/patients', {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(patient)
     });
@@ -51,10 +62,13 @@ async function updatePatient(patient: Patient) {
 }
 
 async function deletePatient(patient: Patient) {
-    const response = await fetch('/api/patients/' + patient.id, {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/patients/' + patient.id, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         }
     });
 

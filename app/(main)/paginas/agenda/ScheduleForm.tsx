@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AutoComplete, AutoCompleteChangeEvent, AutoCompleteCompleteEvent } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
-import { Tooltip } from 'primereact/tooltip';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
@@ -15,7 +14,7 @@ import { useProcedureStore } from '../../../../store/ProcedureStore';
 import { useProfessionalStore } from '../../../../store/ProfessionalStore';
 import { usePatientStore } from '../../../../store/PatientStore';
 import { addMinutes, getColorStatus, getFormatedDateTime } from '../../../../helpers/utils';
-import PagientFormDialog from '../paciente/PatientFormDialog';
+import PatientFormDialog from '../paciente/PatientFormDialog';
 
 interface Status {
     name: string;
@@ -243,7 +242,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
             </div>
 
             <div className="formgrid grid mt-5">
-                <div className="field col-6">
+                <div className="field col-8">
                     <span className="p-float-label">
                         <Dropdown
                             id="procedure"
@@ -261,7 +260,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
                     </span>
                     {submitted && !schedule?.procedure?.id && <small className="p-invalid">O procedimento é obrigatório.</small>}
                 </div>
-                <div className="field col-6">
+                <div className="field col-4">
                     <span className="p-float-label">
                         <InputNumber id="amountPaid" value={schedule?.amountPaid || null} onValueChange={(e) => onInputNumberChange(e, 'amountPaid')} mode="currency" currency="BRL" locale="pt-BR" min={0} minFractionDigits={2} />
                         <label htmlFor="amountPaid">Valor do procedimento</label>
@@ -269,7 +268,7 @@ const ScheduleForm = ({ hideDialog }: any) => {
                 </div>
             </div>
             <div className="flex justify-content-end formgrid grid mt-5">{ButtonsFooter}</div>
-            <PagientFormDialog title={'Cadastrar paciente'} visible={openPatientDialog} hideDialog={hideDialogPatient} />
+            <PatientFormDialog title={'Cadastrar paciente'} visible={openPatientDialog} hideDialog={hideDialogPatient} />
         </>
     );
 };

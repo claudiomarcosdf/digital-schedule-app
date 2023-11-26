@@ -176,6 +176,11 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
     &.status-cancelado {
         background: #FF8066;
         color: #ffff;
+    }
+    
+    &.status-evento {
+        background: #b2ddb4;
+        color: #57606f;
     }     
 }
 
@@ -185,6 +190,15 @@ input:focus::-webkit-datetime-edit{ color: #495057; }
 
 .emoji-legend {
     font-size: medium;
+}
+
+.box-error {
+    display: flex;
+    justify-content: center;
+    background-color: #fad8d2;
+    border: solid 0.2px #faddd8;
+    padding: .8rem;
+    margin-bottom: 1.5rem;
 }
 
 #qrcode-container {

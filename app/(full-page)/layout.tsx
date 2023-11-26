@@ -8,7 +8,7 @@ interface SimpleLayoutProps {
 
 export const metadata: Metadata = {
     title: 'Agenda Digital',
-    description: 'The ultimate collection of design-agnostic, flexible and accessible React UI Components.'
+    description: 'Agenda para profissionais da área da medicina.'
 };
 
 export default function SimpleLayout({ children }: SimpleLayoutProps) {

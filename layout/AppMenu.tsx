@@ -17,6 +17,7 @@ const AppMenu = () => {
         },
         {
             label: 'Agendamento',
+            visible: true,
             items: [{ label: 'Agenda', icon: 'pi pi-fw pi-calendar', to: '/paginas/agenda' }]
         },
         {

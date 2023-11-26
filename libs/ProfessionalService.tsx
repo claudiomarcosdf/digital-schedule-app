@@ -1,7 +1,12 @@
 import { Professional } from '../types/professional';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function getProfessionals() {
-    const response = await fetch('/api/professionals');
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionals', defaultOptions);
 
     if (!response.ok) {
         throw new Error('Erro ao buscar profissionais');
@@ -15,10 +20,13 @@ async function getProfessionals() {
 // },
 
 async function createProfessional(professional: Professional) {
-    const response = await fetch('/api/professionals', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionals', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(professional)
     });
@@ -29,10 +37,13 @@ async function createProfessional(professional: Professional) {
 }
 
 async function updateProfessional(professional: Professional) {
-    const response = await fetch('/api/professionals', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionals', {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(professional)
     });
@@ -43,10 +54,13 @@ async function updateProfessional(professional: Professional) {
 }
 
 async function deleteProfessional(professional: Professional) {
-    const response = await fetch('/api/professionals/' + professional.id, {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionals/' + professional.id, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         }
     });
 
@@ -55,7 +69,9 @@ async function deleteProfessional(professional: Professional) {
 }
 
 async function getProfessionalsByType(professionalTypeId: number) {
-    const response = await fetch('/api/professionals/professionaltype/' + professionalTypeId);
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionals/professionaltype/' + professionalTypeId, defaultOptions);
 
     if (!response.ok) {
         throw new Error('Erro ao listar profissionais pelo tipo');

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext, useEffect, useState, useRef, RefObject, MutableRefObject } from 'react';
+import React, { useContext, useEffect, useState, useRef, MutableRefObject } from 'react';
 
 import { DateSelectArg, DatesSetArg, EventApi, EventClickArg, FormatterInput, formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
@@ -111,10 +111,10 @@ const SchedulePage = () => {
     };
 
     const handleEventClick = (clickInfo: EventClickArg) => {
-        const IdEvent = clickInfo.event.id || null;
+        const idEvent = clickInfo.event.id || null;
 
-        if (IdEvent) {
-            getSchedule(parseInt(IdEvent));
+        if (idEvent) {
+            getSchedule(parseInt(idEvent));
             setOpenDialog(true);
         }
     };
@@ -124,9 +124,10 @@ const SchedulePage = () => {
     };
 
     function renderEventContent(eventInfo: any) {
+        const patient = eventInfo?.event?.extendedProps.patient;
         return (
             <>
-                <b>{eventInfo.timeText}</b>
+                <b>{patient ? eventInfo.timeText : ''}</b>
                 <i>{eventInfo.event.title}</i>
             </>
         );
@@ -158,7 +159,6 @@ const SchedulePage = () => {
 
     const handleResize = () => {
         //Atualiza o tamanho do calendário ao esconder/mostrar o menu lateral
-        console.log('resizing...');
         const calendarApi = calendar.current?.getApi();
         calendarApi?.updateSize();
         const resizeObserver = new ResizeObserver(() => calendarApi?.updateSize());
@@ -209,6 +209,7 @@ const SchedulePage = () => {
                                                 // other view-specific options here
                                             }
                                         }}
+                                        //displayEventTime={false}
                                         navLinks={true}
                                         datesSet={handleNavigationClick}
                                         eventTimeFormat={eventTimeFormat}
@@ -240,6 +241,7 @@ const SchedulePage = () => {
                                 <span className="status-badge status-presente">Presente</span>
                                 <span className="status-badge status-finalizado">Finalizado</span>
                                 <span className="status-badge status-cancelado">Cancelado</span>
+                                <span className="status-badge status-evento">Bloqueio de horário</span>
                             </Fieldset>
                         </div>
                     </div>

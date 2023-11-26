@@ -10,7 +10,7 @@ function formatDateHourBrazil(date: string) {
     moment.locale('pt-BR');
     const dateHour = moment(date).format('DD/MM/YYYY HH:mm');
     return dateHour;
-  }
+}
 
 function formatCurrency(value: number) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -28,7 +28,7 @@ function validPrice(value: number | undefined) {
     try {
         if (parseFloat(value.toString()) < 0.00) return false;
     } catch {
-        console.log(' ERRO '+ value)
+        console.log(' error valid price '+ value)
     }
 
     return true;
@@ -87,6 +87,12 @@ function getFormatedDateByType(date: string, type: string) {
 
 function addMinutes(dateTime: Date, minutes: number) {
     return moment(dateTime).add(minutes, 'm').toDate();
+}
+
+function addDay(dateTime: string, day: number) {
+    const dateWithAddDay = moment(dateTime).add(day, 'd').toISOString();
+
+    return getFormatedDate(dateWithAddDay);
 }
 
 //Retorna primeira letra em Caixa alta
@@ -358,12 +364,14 @@ function getColorStatus(status: string) {
         case "PRESENTE":
             return '#00C9A7'
         case "FINALIZADO":
-            return '#DCB0FF'     
+            return '#DCB0FF'
         case "CANCELADO":
             return '#FF8066'
+        case "EVENTO":
+            return '#b2ddb4'
         default:
             return '#009EFA'
     }
 }
 
-export { formatDateHourBrazil, formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, getFormatedDateByType, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus };
+export { formatDateHourBrazil, formatCurrency, formatNumber, validPrice, formatBrazil, formatDateBr, getFormatedDate, getFormatedDateTime, getFormatedDateByType, addMinutes, capitalize, capitalizeFullName, capitalizeShortName, formatCpfToView, formatPhone, maskPhone, validTime, convertToProfessionalScheduleForm, convertToProfessionalSchedule, getColorStatus, addDay };

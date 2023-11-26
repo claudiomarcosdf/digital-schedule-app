@@ -1,10 +1,16 @@
 import { ProfessionalSchedule } from '../types/professional';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function createProfessionalSchedule(professionalSchedule: ProfessionalSchedule) {
-    const response = await fetch('/api/professionalschedules', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionalschedules', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(professionalSchedule)
     });
@@ -15,10 +21,13 @@ async function createProfessionalSchedule(professionalSchedule: ProfessionalSche
 }
 
 async function updateProfessionalSchedule(professionalSchedule: ProfessionalSchedule) {
-    const response = await fetch('/api/professionalschedules', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/professionalschedules', {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(professionalSchedule)
     });

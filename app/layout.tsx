@@ -11,6 +11,9 @@ import '../styles/layout/layout.scss';
 import '../styles/demo/Demos.scss';
 
 import pt_br from '../public/layout/languages/pt.json';
+import { AuthProvider } from '../providers/auth-provider';
+import { Suspense } from 'react';
+import Loading from './(main)/loading';
 
 interface RootLayoutProps {
     children: React.ReactNode;
@@ -26,10 +29,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 <link id="theme-css" href={`/themes/saga-purple/theme.css`} rel="stylesheet"></link>
             </head>
             <body>
-                <PrimeReactProvider>
-                    <ToastContainer autoClose={4000} hideProgressBar />
-                    <LayoutProvider>{children}</LayoutProvider>
-                </PrimeReactProvider>
+                <AuthProvider>
+                    <PrimeReactProvider>
+                        <ToastContainer autoClose={4000} hideProgressBar />
+                        <LayoutProvider>{children}</LayoutProvider>
+                    </PrimeReactProvider>
+                </AuthProvider>
             </body>
         </html>
     );

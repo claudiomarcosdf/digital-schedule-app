@@ -7,12 +7,37 @@ import { AppTopbarRef } from '../types/types';
 import { LayoutContext } from './context/layoutcontext';
 import { useWhatsappStore } from '../store/WhatsappStore';
 import { Tooltip } from 'primereact/tooltip';
+import { Menu } from 'primereact/menu';
+import { SignOut } from '../app/(full-page)/auth/sign-out/sign-out';
 
 const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
     const topbarmenubuttonRef = useRef(null);
+    const menuRight = useRef(null);
+
+    const items = [
+        {
+            label: 'Usuário',
+            items: [
+                {
+                    label: 'Perfil',
+                    icon: 'pi pi-user-edit',
+                    command: () => {}
+                }
+            ]
+        },
+        { separator: true },
+        {
+            label: 'Sair',
+            icon: 'pi pi-external-link',
+            command: () => {
+                console.log('sair');
+                SignOut();
+            }
+        }
+    ];
 
     const { instanceInfo } = useWhatsappStore((state) => state);
 
@@ -50,7 +75,9 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                         <span>Calendar</span>
                     </button>
                 </Link>
-                <button type="button" className="p-link layout-topbar-button">
+
+                <Menu model={items} popup ref={menuRight} id="popup_menu_right" popupAlignment="right" />
+                <button type="button" className="p-link layout-topbar-button" onClick={(event) => menuRight?.current?.toggle(event)} aria-controls="popup_menu_right" aria-haspopup>
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>

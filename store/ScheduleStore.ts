@@ -5,7 +5,7 @@ import { PatientSchedule, Schedule, ScheduleCreateUpdateResponse, ScheduleReques
 import { initialProfessional, initialProfessionalType } from "./ProfessionalStore";
 import { initialProcedure } from "./ProcedureStore";
 import { createSchedule, deleteSchedule, getSchedulesByProfessional, updateSchedule, sendConfirmation } from "../libs/ScheduleService";
-import { capitalizeShortName, getColorStatus } from "../helpers/utils";
+import { addDay, capitalizeShortName, getColorStatus, getFormatedDate } from "../helpers/utils";
 import { ProfessionalType } from "../types/professional";
 
 type ExtendedProps = {
@@ -17,7 +17,11 @@ type ScheduleEvent = {
   title: string;
   start: string;
   end: string;
+  // allDay: boolean;
+  display: string;
   backgroundColor: string;
+  borderColor: string;
+  textColor: string,
   extendedProps: ExtendedProps;
 }
 
@@ -85,12 +89,20 @@ const convertToScheduleEvent = (schedule: Schedule | ScheduleCreateUpdateRespons
      }
   }
 
+  //to display in calendar
    return {
       id: schedule.id?.toString() || '',
-      title: schedule?.patient ? "\u2013" + capitalizeShortName(patientName) : "\u2013" + schedule.description,
+      title: schedule?.patient ? "\u2013" + capitalizeShortName(patientName) : schedule.description,
       start: schedule.startDate,
-      end: schedule.endDate,
+      end: schedule.endDate, 
       backgroundColor: getColorStatus(schedule.status || ''),
+      borderColor: getColorStatus(schedule.status || ''),
+      textColor: schedule.status == 'EVENTO' ? '#57606f' : '',
+      display: schedule.status == 'EVENTO' ? 'block' : 'auto',
+      //start: schedule.status == 'EVENTO' ? getFormatedDate(schedule.startDate) : schedule.startDate,
+      //end: schedule.status == 'EVENTO' ? addDay(schedule.endDate, 1) : schedule.endDate,
+      //allDay: schedule.status == 'EVENTO' ? true : false, //--> Não deixa editar o evento | trabalha em conjunto com o display
+      //display: schedule.status == 'EVENTO' ? 'background' : 'auto',
       extendedProps: {
         patient: schedule.patient ? true : false
       }

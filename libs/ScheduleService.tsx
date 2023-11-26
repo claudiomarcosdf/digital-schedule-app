@@ -1,7 +1,12 @@
 import { Schedule, ScheduleRequest } from '../types/schedule';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function getSchedulesByProfessional(professionalTypeId: number, professionalId: number, startDate: string, endDate: string) {
-    const response = await fetch(`/api/schedules?professionalTypeId=${professionalTypeId}&professionalId=${professionalId}&startDate=${startDate}&endDate=${endDate}`);
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/schedules?professionalTypeId=${professionalTypeId}&professionalId=${professionalId}&startDate=${startDate}&endDate=${endDate}`, defaultOptions);
 
     if (!response.ok) {
         throw new Error('Erro ao listar agendas do profissional');
@@ -18,10 +23,13 @@ async function getMessageError(response: Response, messageDefault: string) {
 }
 
 async function createSchedule(schedule: ScheduleRequest) {
-    const response = await fetch('/api/schedules', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/schedules', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(schedule)
     });
@@ -32,10 +40,13 @@ async function createSchedule(schedule: ScheduleRequest) {
 }
 
 async function updateSchedule(schedule: ScheduleRequest) {
-    const response = await fetch('/api/schedules', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/schedules', {
         method: 'PUT',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(schedule)
     });
@@ -46,10 +57,13 @@ async function updateSchedule(schedule: ScheduleRequest) {
 }
 
 async function deleteSchedule(schedule: Schedule) {
-    const response = await fetch('/api/schedules/' + schedule.id, {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/schedules/' + schedule.id, {
         method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         }
     });
 
@@ -58,8 +72,14 @@ async function deleteSchedule(schedule: Schedule) {
 }
 
 async function sendConfirmation(date: string) {
-    const response = await fetch(`/api/schedules/sendconfirmation?scheduleDate=${date}`, {
-        method: 'POST'
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/schedules/sendconfirmation?scheduleDate=${date}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers
+        }
     });
 
     const error = !response.ok ? 'A conexão com o whatsapp falhou' : false;

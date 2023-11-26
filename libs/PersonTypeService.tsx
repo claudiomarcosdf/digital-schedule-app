@@ -1,7 +1,11 @@
 import { PersonType } from '../types/person';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function getPersonTypes() {
-    const response = await fetch('/api/persontypes');
+    const defaultOptions = await headerAuthorizationToken();
+    const response = await fetch(pathNextToApiDigitalSchedule + '/persontypes', defaultOptions);
 
     if (!response.ok) {
         throw new Error('Erro ao buscar tipos de pessoa');
@@ -10,10 +14,13 @@ async function getPersonTypes() {
 }
 
 async function createPersonType(personType: PersonType) {
-    const response = await fetch('/api/persontypes', {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(pathNextToApiDigitalSchedule + '/persontypes', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(personType)
     });

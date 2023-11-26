@@ -11,7 +11,7 @@ import { InputMask, InputMaskChangeEvent } from 'primereact/inputmask';
 import { InputSwitch, InputSwitchChangeEvent } from 'primereact/inputswitch';
 import { maskPhone } from '../../../../helpers/utils';
 
-const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
+const PatientFormDialog = ({ title, visible, hideDialog }: any) => {
     const [patient, setPatient] = useState<Patient | null>(initialPatient);
     const [submitted, setSubmitted] = useState(false);
 
@@ -226,4 +226,4 @@ const PagientFormDialog = ({ title, visible, hideDialog }: any) => {
     );
 };
 
-export default PagientFormDialog;
+export default PatientFormDialog;

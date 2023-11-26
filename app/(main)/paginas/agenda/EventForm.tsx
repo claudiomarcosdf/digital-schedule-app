@@ -17,13 +17,7 @@ interface Status {
 const EventForm = ({ hideDialog }: any) => {
     const [schedule, setSchedule] = useState<Schedule | null>(initialSchedule);
     const [submitted, setSubmitted] = useState(false);
-    const statusList: Status[] = [
-        { name: 'AGENDADO', color: '#009EFA' },
-        { name: 'CONFIRMADO', color: '#F9F871' },
-        { name: 'PRESENTE', color: '#00C9A7' },
-        { name: 'FINALIZADO', color: '#DCB0FF' },
-        { name: 'CANCELADO', color: '#FF8066' }
-    ];
+    const statusList: Status[] = [{ name: 'EVENTO', color: '#b2ddb4' }];
 
     const { schedule: scheduleStore, createSchedule, updateSchedule } = useScheduleStore((state) => state);
     const professional = useProfessionalStore((state) => state.professional);
@@ -76,17 +70,18 @@ const EventForm = ({ hideDialog }: any) => {
         if (schedule?.description && schedule.startDate && schedule.endDate) {
             const startDate = schedule.startDate ? getFormatedDateTime(new Date(schedule.startDate.toString()).toString()) : '';
             const endDate = schedule.endDate ? getFormatedDateTime(new Date(schedule.endDate.toString()).toString()) : '';
+            const statusEvent = 'EVENTO';
 
             if (schedule?.id) {
-                updateSchedule({ ...schedule, startDate, endDate });
+                updateSchedule({ ...schedule, startDate, endDate, status: statusEvent });
             } else {
-                createSchedule({ ...schedule, startDate, endDate });
+                createSchedule({ ...schedule, startDate, endDate, status: statusEvent });
             }
             hideDialog();
         }
     }
 
-    console.log('Event: ', schedule);
+    //console.log('Event: ', schedule);
     return (
         <>
             <div className="formgrid grid mt-3">
@@ -109,16 +104,7 @@ const EventForm = ({ hideDialog }: any) => {
                 </div>
                 <div className="field col-4">
                     <span className="p-float-label">
-                        <Dropdown
-                            id="status"
-                            value={schedule?.status || 'AGENDADO'}
-                            onChange={(e) => onSelectStatus(e.value)}
-                            options={statusList}
-                            optionLabel="name"
-                            editable
-                            placeholder="Selecione um status"
-                            style={{ backgroundColor: `${getColorStatus(schedule?.status as string)}` }}
-                        />
+                        <Dropdown id="status" value={'EVENTO'} onChange={(e) => onSelectStatus(e.value)} options={statusList} optionLabel="name" editable placeholder="Selecione um status" style={{ backgroundColor: `${getColorStatus('EVENTO')}` }} />
                         <label htmlFor="status">Status</label>
                     </span>
                 </div>

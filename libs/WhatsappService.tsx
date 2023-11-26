@@ -1,4 +1,7 @@
 import { FileMessage } from '../types/whatsapp';
+import { headerAuthorizationToken } from './auth';
+
+const pathNextToApiDigitalSchedule = '/api-schedule'; // para o next nao confundir com /api/auth...
 
 async function getMessageError(response: Response, messageDefault: string) {
     const objError = (await response?.text()).trim();
@@ -6,7 +9,9 @@ async function getMessageError(response: Response, messageDefault: string) {
 }
 
 async function getInstanceInfoApi() {
-    const response = await fetch(`/api/whatsapp/instanceinfo`);
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/whatsapp/instanceinfo`, defaultOptions);
 
     const error = !response.ok ? await getMessageError(response, 'A conexão com o whatsapp falhou') : false;
     const data = error ? null : await response.json();
@@ -14,7 +19,9 @@ async function getInstanceInfoApi() {
 }
 
 async function getQRCodeApi() {
-    const response = await fetch(`/api/whatsapp/qrcode`);
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/whatsapp/qrcode`, defaultOptions);
 
     const error = !response.ok ? await getMessageError(response, 'A conexão com o whatsapp falhou') : false;
     const data = error ? null : await response.json();
@@ -22,7 +29,9 @@ async function getQRCodeApi() {
 }
 
 async function getDefaultMessage(messageType: string) {
-    const response = await fetch(`/api/whatsapp/filemessage/${messageType}`);
+    const defaultOptions = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/whatsapp/filemessage/${messageType}`, defaultOptions);
 
     const error = !response.ok ? await getMessageError(response, 'Não foi possível consultar mensagem') : false;
     const data = error ? null : (await response?.text()).trim();
@@ -30,10 +39,13 @@ async function getDefaultMessage(messageType: string) {
 }
 
 async function saveDefaultMessage(fileMessage: FileMessage) {
-    const response = await fetch(`/api/whatsapp/filemessage`, {
+    const { headers } = await headerAuthorizationToken();
+
+    const response = await fetch(`${pathNextToApiDigitalSchedule}/whatsapp/filemessage`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            ...headers
         },
         body: JSON.stringify(fileMessage)
     });
